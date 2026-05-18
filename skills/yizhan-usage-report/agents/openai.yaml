@@ -1,7 +1,0 @@
-interface:
-  display_name: "生涯翼站报告"
-  short_description: "生成学校生涯翼站数据分析报告"
-  brand_color: "#167A74"
-  default_prompt: "Use $yizhan-usage-report to generate a 生涯翼站学期数据分析报告 from the monthly Excel file and website backend aggregates."
-policy:
-  allow_implicit_invocation: true
