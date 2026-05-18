@@ -4,10 +4,13 @@ This repository backs up WorkBuddy skills related to Yuanbo / Yishengya / educat
 
 ## Included skills
 
-- `yuanbo-proposal` — 远播教育集团客户提案工作流助手
-- `yizhan-usage-report` — 生涯翼站学校使用数据分析报告工作流
 - `education-proposal-design` — 教育类建设/申报/课程方案文档工作流
 - `ppt-master` — SVG/PPTX 高质量演示文稿生成工作流
+- `prompt-laozhongyi` — Prompt 老中医：Prompt 诊断与优化工作流
+
+> 以下 skills 因尚未稳定已移除：
+> - ~~`yuanbo-proposal` — 远播教育集团客户提案工作流助手~~
+> - ~~`yizhan-usage-report` — 生涯翼站学校使用数据分析报告工作流~~
 
 ## Notes
 
