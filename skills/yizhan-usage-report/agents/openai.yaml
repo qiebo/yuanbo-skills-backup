@@ -1,0 +1,7 @@
+interface:
+  display_name: "生涯翼站报告"
+  short_description: "生成学校生涯翼站数据分析报告"
+  brand_color: "#167A74"
+  default_prompt: "Use $yizhan-usage-report to run the fixed 8-task 生涯翼站 report workflow; show the task list first, run the stable Task 3 login check with npm run login:check, ask the user for manual login help if it fails, generate only the Word report plus registry files by default, and stop if login or website-data validation fails."
+policy:
+  allow_implicit_invocation: true
