@@ -1,5 +1,5 @@
 ---
-name: education-proposal-design
+name: 远播方案助手V1.0
 description: >
   教育项目方案设计与文档生成工作流。当用户需要编写学校建设项目申报方案、
   实验室建设方案、科技教育方案、预算申报方案、课程建设方案等教育类Word文档时触发。
