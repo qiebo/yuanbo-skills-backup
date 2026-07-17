@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "远播方案项目配置",
+  "type": "object",
+  "required": ["project", "output", "validation"],
+  "properties": {
+    "project": {
+      "type": "object",
+      "required": ["name", "document_type", "title", "version"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "document_type": {"enum": ["A", "B", "C", "D", "E", "F"]},
+        "client": {"type": "string"},
+        "title": {"type": "string", "minLength": 1},
+        "version": {"type": "string"},
+        "date": {"type": "string"}
+      }
+    },
+    "output": {
+      "type": "object",
+      "required": ["filename", "stylepack"],
+      "properties": {
+        "filename": {"type": "string", "pattern": "\\.docx$"},
+        "stylepack": {"type": "string", "pattern": "\\.docx$"},
+        "toc": {"type": "boolean"},
+        "numbered_sections": {"type": "boolean"}
+      }
+    },
+    "validation": {"type": "object"}
+  }
+}

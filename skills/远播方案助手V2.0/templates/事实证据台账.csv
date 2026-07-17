@@ -1,0 +1,2 @@
+claim_id,claim,claim_type,risk_level,source_type,source_title,source_locator,source_date,checked_at,valid_until,authority_level,confidence,allowed_wording,target_sections,status,notes
+C-001,示例学校校训为“求真”,verified_fact,medium,official_school,学校官网,https://example.invalid,,2026-07-10,,primary,high,学校以“求真”为校训,项目背景;顶层设计,pending,示例行必须替换

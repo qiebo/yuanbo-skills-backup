@@ -1,0 +1,3 @@
+phase_id,phase,responsible,prerequisite,task,deliverable,acceptance_criteria,start_date,end_date,dependency,risk,response,status
+I-001,需求与设计,项目负责人,项目立项,完成深化设计,深化设计文件,需求R-001和R-002全部落位,2026-08-01,2026-08-15,无,需求变更,建立变更台账,active
+I-002,部署与培训,供应商与学校,深化设计通过,完成设备部署和教师培训,设备验收单和培训记录,设备数量与预算表一致且培训完成8课时,2026-08-16,2026-09-15,I-001,交付延期,设置周进度检查,active
