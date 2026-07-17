@@ -1,0 +1,4 @@
+interface:
+  display_name: "通用清单配置"
+  short_description: "解析项目需求并生成可追溯、可确认、可审计的产品配置清单"
+  default_prompt: "Use $building-configuration-lists to analyze my project files and build a confirmed configuration list."

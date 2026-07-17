@@ -4,6 +4,7 @@ This repository backs up WorkBuddy skills related to Yuanbo / Yishengya / educat
 
 ## Included skills
 
+- `building-configuration-lists` — 通用配置清单工作流：需求澄清、空间规划、标准产品匹配、审批闸门与 Excel 模板输出
 - `education-proposal-design` — 教育类建设/申报/课程方案文档工作流（WorkBuddy 原生格式）
 - `远播方案助手V1.0` — 教育类方案设计工作流的**通用打包**（agent-agnostic，适配 Claude/WorkBuddy/其他 Agent 框架），由 `education-proposal-design` 升级并改写而成
 - `ppt-master` — SVG/PPTX 高质量演示文稿生成工作流
