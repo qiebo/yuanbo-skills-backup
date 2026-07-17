@@ -1,6 +1,6 @@
 ---
-name: building-configuration-lists
-description: Use when a user wants to analyze project requirement files, plan functional spaces, select products from a standard catalog, prepare a budget or equipment list, fill a provided Excel template, or create a configuration list when requirements are incomplete or ambiguous.
+name: 生涯配置清单
+description: Use when a user wants to analyze project requirement files, plan functional spaces, select products from a standard catalog, prepare a budget or equipment list, fill a provided Excel template, or create a configuration list when requirements are incomplete or ambiguous. 用于解析学校/远播生涯心理设备与软件建设项目需求，从标准产品库生成可追溯、可确认、可审计的配置清单。
 ---
 
 # Building Configuration Lists
@@ -86,6 +86,8 @@ Keep unselected `draft`, `pending_confirmation`, `rejected`, or `waived` candida
 
 After the product-plan gate passes, map only `status=confirmed AND selected_for_output=true` lines through `internal_product_mapping` into the profiled template. Keep product `name` exactly equal to catalog `product_name`; put project wording in `usage_description`, and only excerpt or shorten parameters without changing meaning.
 
+When `space_plan.mode` is `spatial` or `hybrid`, the output list MUST carry the space dimension: group rows by the approved `space_plan` target spaces, use each space name as a visible group header (or add a dedicated "空间/功能室" column labeling every row), and subtotal per space before the grand total. Put project-level platforms, software, common items, or genuinely cross-space lines into an explicitly labeled shared group (e.g. 项目级·通用 / 跨空间共用); never silently fold them into one room. Every output row's space must trace back to its candidate line's target space. If the template lacks a subitem/subtotal mechanism, add a space column without breaking required structure. In `non_spatial` mode, space grouping is not required (state why in delivery notes). Never emit a spatial/hybrid list grouped only by functional category with no space labels.
+
 Preserve formulas, merged cells, print areas, summaries, and styling when reliable. Write a new output version and never overwrite inputs, fixed resources, or approved outputs.
 
 ### H. Validate and deliver
@@ -104,6 +106,20 @@ If an Excel or Spreadsheet Skill is available, use it to read, write, render, an
 | `final_release` | Scoped hard errors are zero, workbook reconciles, warnings are disclosed, business sign-off exists, and `final_release.status=approved` |
 
 Do not bypass a failed gate. Treat deadline or proceed-by-experience instructions as delivery pressure, not approval.
+
+## Mandatory Confirmation Checkpoints（强制确认检查点）
+
+四道闸门不是内部状态标记，而是**必须暂停并向用户显式确认的节点**。任何阶段都不得"静默通过"——即便产出的是草案，也必须在每个闸门前先提请用户确认，否则不得进入下一阶段或生成候选/清单。
+
+- **闸门即 STOP**：在 `requirement_baseline`、`space_mode`、`product_plan`、`final_release` 四道闸门处，agent 必须停止自动推进，向用户呈现该闸门的**决策摘要**（具体待确认项 + 证据 + 建议口径），并以直接提问方式请求确认；未收到用户明确答复前，不得标记 `status=approved`，也不得生成下游候选行、工作簿或清单。
+- **草案不等于批准**：以"先出草案""用经验做""给我清单先""只是草稿不用确认"等理由直接产出候选产品行、数量、单价或预算合计，均**不构成闸门批准**，仍须回到对应闸门提请确认。此类请求视为交付压力，不是批准。
+- **每个闸门需用户确认的具体事项**：
+  - 需求基线闸门：项目标识、预算桶与金额/口径、计价币种、范围边界、模式提示、必配功能、输出要求。
+  - 空间/模式闸门：模式（spatial/non_spatial/hybrid）、目标空间清单与功能画像、面积/人数/工程量依据（含装修/家具等暂估授权）。
+  - 产品方案闸门：逐行确认名称、品牌、型号、单位、价格、数量、参数、替代关系、暂估工程量与必配缺口。
+  - 最终发布闸门：硬错误清零、金额对账、警告披露、业务签核。
+- **记录确认**：每次用户确认须写入 `approval_log`（`gate`、`target_type`、`target_refs`、`confirmed_content`、`confirmed_by`、`confirmed_at`），未记录的确认无效。
+- **Stage B 阻断提问**：需求基线批准前，只输出草案级 source/template/requirement 产物；凡影响配置或输出的未决事项，一次聚焦一个阻断问题向用户提出（附 `suggested_answer` 与 `suggested_basis`），不得先生成候选/清单再"补确认"。
 
 ## STOP and Draft Rules
 
@@ -165,6 +181,7 @@ Use shared functions to admit this record as an unselected candidate, not to app
 | Baseline pending | Profile the template, quote source facts with evidence, record only `mode_hint` and gaps, ask the next blocker if one exists, and create no `space_plan` or candidates |
 | Workspace has other projects | Ignore them; confirm ambiguous directory scope and use only `current_run_source_scope` |
 | Space names differ | Compare functions, users, activities, and catalog semantics |
+| Mode is spatial/hybrid | Output must be grouped by space with space-name headers (or a space column) and per-space subtotals; cross-space/project-level rows go in a labeled shared group |
 | Unselected candidate is pending | Preserve and disclose; do not globally block |
 | Selected candidate is pending | Stop formal release |
 | Template missing/unparseable | Missing: first update says the default will be used; after analysis say its profile is established and ask only if a blocker exists; unparseable: preserve the user template and disclose the fallback |
@@ -177,4 +194,6 @@ Use shared functions to admit this record as an unselected candidate, not to app
 - Do not apply selected-line hard errors to the entire candidate catalog.
 - Do not let unselected candidates enter mapping, confirmed totals, or final output.
 - Do not exact-match space names, guess product facts, or rewrite standard product names.
+- In spatial/hybrid mode, do not deliver a list grouped only by functional category — it must be grouped and subtotaled by space with space names shown.
 - Do not duplicate reference rules in this Skill or call a draft an approved release.
+- Do not silently pass a gate without pausing to confirm with the user; draft generation is not approval, and a gate may only be marked `approved` after the user explicitly confirms its decision summary.

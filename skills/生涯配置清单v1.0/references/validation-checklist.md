@@ -54,6 +54,8 @@
 - [ ] 正式 `final_release.input_versions` 缺少 `requirement_baseline_version_ref`、`source_manifest_version_ref`、`template_profile_version_ref`、`space_plan_version_ref` 或 `candidate_plan_version_ref`；前四项与 `candidate_plan` 同名字段不同值，直接引用了 `project_id=null`/其他项目版本，或 `content_fingerprint_refs` 与所绑 Stage A 初始版在内容未变时不一致。只是通过链回溯到 `project_id=null` 的 Stage A initial 不属于错误。
 - [ ] Intake 指纹变化后未从 A/B 重建新基线版本，或未在基线批准后按 C–H 分阶段重放并保留 `evidence_refs`/版本引用。
 - [ ] `status=open` 的质量问题影响 `selected_for_output=true` 行、最终输出使用的来源记录或 `blocking=true` 需求。
+- [ ] `space_plan.mode=spatial|hybrid`，但正式/草案清单未按目标空间分组、未以空间名称作为分组标题或专列逐行标注、未按空间给出小计，或仅按功能类别分组而丢失空间维度；跨空间/项目级行未归入显式"项目级·通用"或"跨空间共用"分组而被随意并入单一房间；或任一输出行的所属空间无法回溯到其候选行目标空间、分组小计与 `space_plan` 不一致。
+- [ ] 已生成候选产品行、数量、单价或预算合计（或将其写入工作簿/清单）早于 `requirement_baseline.status=approved` 且未先向用户提请确认；或在用户未显式确认的情况下将任一前置闸门（`requirement_baseline`/`space_mode`/`product_plan`/`final_release`）标记为 `approved` 或跳过其确认检查点（静默通过）。
 
 ## Warnings（警告）
 
