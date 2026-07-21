@@ -1,0 +1,115 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "标书拆解报告 JSON",
+  "type": "object",
+  "required": ["meta", "sections", "source_note"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["project_name", "purchase_method"],
+      "properties": {
+        "project_name": {"type": "string"},
+        "project_no": {"type": "string"},
+        "purchase_method": {"type": "string"},
+        "purchaser": {"type": "string"},
+        "agency": {"type": "string"},
+        "budget": {"type": "string", "description": "预算/最高限价，超限即无效时显式标注"},
+        "deadline": {"type": "string"},
+        "validity": {"type": "string"},
+        "agency_fee": {"type": "string"},
+        "hero_tag": {"type": "string", "description": "如 招标文件 · 拆解分析"},
+        "hero_sub": {"type": "string", "description": "项目编号 / 采购方式 / 采购人 一行"},
+        "facts_extra": {
+          "type": "array",
+          "description": "hero 下方关键指标卡，可空数组",
+          "items": {
+            "type": "object",
+            "required": ["k", "v"],
+            "properties": {
+              "k": {"type": "string"},
+              "v": {"type": "string"},
+              "tone": {"type": "string", "enum": ["", "red", "green", "blue"]}
+            }
+          }
+        }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "minItems": 10,
+      "description": "固定 10 章节，顺序与 id 必须一致：info/time/reject/qual/score/demand/files/tips/strategy/pit",
+      "items": {
+        "type": "object",
+        "required": ["id", "num", "title", "blocks"],
+        "properties": {
+          "id": {"type": "string", "enum": ["info", "time", "reject", "qual", "score", "demand", "files", "tips", "strategy", "pit"]},
+          "num": {"type": "string"},
+          "title": {"type": "string"},
+          "hint": {"type": "string", "description": "章节右侧小字，注明信息来源，如 来自『前附表』"},
+          "blocks": {
+            "type": "array",
+            "items": {"$ref": "#/definitions/block"}
+          }
+        }
+      }
+    },
+    "tech_materials": {
+      "type": ["array", "null"],
+      "description": "规则七：招标文件有明确技术参数响应证明材料要求时必填；否则 null",
+      "items": {
+        "type": "object",
+        "required": ["clause", "material", "source"],
+        "properties": {
+          "clause": {"type": "string", "description": "对应参数条款（含 ★/▲ 标记）"},
+          "material": {"type": "string", "description": "要求提供的证明材料（检测报告/彩页/截图/授权函等）"},
+          "source": {"type": "string", "description": "招标文件章节/条款号"}
+        }
+      }
+    },
+    "source_note": {
+      "type": "string",
+      "description": "尾部数据来源声明，含 招标文件名称、项目编号、拆解规则、生成时间"
+    }
+  },
+  "definitions": {
+    "block": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["facts", "table", "callout", "list", "text", "scorebars", "timeline"]
+        },
+        "caption": {"type": "string"},
+        "fields": {
+          "type": "array",
+          "description": "facts 类型：[{k,v,tone?}]",
+          "items": {
+            "type": "object",
+            "required": ["k", "v"],
+            "properties": {
+              "k": {"type": "string"},
+              "v": {"type": "string"},
+              "tone": {"type": "string", "enum": ["", "red", "green", "blue"]}
+            }
+          }
+        },
+        "headers": {"type": "array", "items": {"type": "string"}},
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {"type": "string"}
+          }
+        },
+        "level": {"type": "string", "enum": ["warn", "amber", "green", "blue"], "description": "callout 类型"},
+        "text": {"type": "string", "description": "callout / text 的 HTML 内容（允许简单标签 b/span）"},
+        "items": {
+          "type": "array",
+          "description": "list 类型：[{text, pill?}]；scorebars：[{name,pct,pts}]；timeline：[{date,ev,note?}]",
+          "items": {"type": "object"}
+        }
+      }
+    }
+  }
+}
