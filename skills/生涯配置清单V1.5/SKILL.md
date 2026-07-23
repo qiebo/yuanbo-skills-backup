@@ -91,6 +91,15 @@ After the product-plan gate passes, map only `status=confirmed AND selected_for_
 
 When `space_plan.mode` is `spatial` or `hybrid`, the output list MUST carry the space dimension: group rows by the approved `space_plan` target spaces, use each space name as a visible group header (or add a dedicated "空间/功能室" column labeling every row), and subtotal per space before the grand total. Put project-level platforms, software, common items, or genuinely cross-space lines into an explicitly labeled shared group (e.g. 项目级·通用 / 跨空间共用); never silently fold them into one room. Every output row's space must trace back to its candidate line's target space. If the template lacks a subitem/subtotal mechanism, add a space column without breaking required structure. In `non_spatial` mode, space grouping is not required (state why in delivery notes). Never emit a spatial/hybrid list grouped only by functional category with no space labels.
 
+### Required handling of unmatched requirements
+
+An unmatched requirement is a source requirement that has no reliable, approved catalog product mapping or approved non-product basis. It is a warning requirement row, never a substitute product and never a selected catalog product.
+
+- In `spatial` or `hybrid` output, retain each unmatched requirement in its approved target-space block after all selected rows for that space and immediately before the space subtotal. Copy only evidenced requirement wording, known unit, quantity, and technical constraints; state the matching reason in the remark. In `non_spatial` output, retain it in an explicit `项目级·未匹配` group before the grand total.
+- Never invent a product name, brand, model, technical parameter, image, price, or quantity for an unmatched requirement; leave `产品图片` and every unit-price and amount cell blank. It is excluded from every subtotal, grand total, `confirmed_totals`, and `internal_product_mapping`.
+- The `未匹配需求汇总` worksheet MUST receive one row for every unmatched requirement, with its sequence, target space, source requirement, known unit/quantity/technical constraints, reason for no reliable match, and required follow-up. The main-sheet row and summary row must share a traceability reference in `unresolved_items` and `traceability_audit`.
+- A `blocking=true` unmatched requirement remains visible in a labeled draft but still blocks formal release. A non-blocking unmatched requirement is a disclosed warning, not permission to silently omit it.
+
 Preserve formulas, merged cells, print areas, summaries, and styling when reliable. Write a new output version and never overwrite inputs, fixed resources, or approved outputs.
 
 #### Verified product images

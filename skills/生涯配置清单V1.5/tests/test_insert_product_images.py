@@ -12,6 +12,25 @@ from scripts.insert_product_images import insert_images
 
 
 class InsertProductImagesTests(unittest.TestCase):
+    def test_skill_requires_unmatched_requirements_in_both_output_locations(self):
+        skill_text = (Path(__file__).parents[1] / "SKILL.md").read_text(encoding="utf-8")
+        workflow_text = (
+            Path(__file__).parents[1] / "references" / "workflow-and-gates.md"
+        ).read_text(encoding="utf-8")
+        required_rules = [
+            "### Required handling of unmatched requirements",
+            "after all selected rows for that space and immediately before the space subtotal",
+            "`未匹配需求汇总` worksheet MUST receive one row for every unmatched requirement",
+            "leave `产品图片` and every unit-price and amount cell blank",
+            "excluded from every subtotal, grand total, `confirmed_totals`, and `internal_product_mapping`",
+        ]
+        for required_rule in required_rules:
+            with self.subTest(required_rule=required_rule):
+                self.assertIn(required_rule, skill_text)
+        self.assertIn("### 未匹配需求的强制输出", workflow_text)
+        self.assertIn("已匹配产品行之后、空间小计之前", workflow_text)
+        self.assertIn("`未匹配需求汇总`工作表", workflow_text)
+
     def test_default_template_is_generic_and_blank(self):
         template = Path(
             os.environ.get(
