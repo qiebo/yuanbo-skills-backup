@@ -1,0 +1,4 @@
+interface:
+  display_name: "生涯配置清单"
+  short_description: "远播生涯心理设备配置清单助手：解析项目需求并生成含已验证产品缩略图的可追溯、可确认、可审计配置清单"
+  default_prompt: "Use $生涯配置清单 to analyze my project files and build a confirmed configuration list with verified product thumbnails where available."
