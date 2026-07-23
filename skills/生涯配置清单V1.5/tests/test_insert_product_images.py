@@ -12,27 +12,44 @@ from scripts.insert_product_images import insert_images
 
 
 class InsertProductImagesTests(unittest.TestCase):
-    def test_default_template_reserves_a_product_image_column(self):
+    def test_default_template_is_generic_and_blank(self):
         template = Path(
             os.environ.get(
                 "DEFAULT_TEMPLATE_PATH",
                 Path(__file__).parents[1] / "assets" / "default-configuration-list.xlsx",
             )
         )
-        source_template = Path(os.environ["SOURCE_TEMPLATE_PATH"])
-        self.assertEqual(
-            hashlib.sha256(template.read_bytes()).hexdigest(),
-            hashlib.sha256(source_template.read_bytes()).hexdigest(),
-        )
         workbook = load_workbook(template, data_only=False)
         self.assertEqual(workbook.sheetnames, ["配置清单", "未匹配需求汇总"])
         sheet = workbook["配置清单"]
+        self.assertEqual(sheet["A1"].value, "{{学校名称}}生涯心理学生发展中心配置清单")
         self.assertEqual(sheet["E2"].value, "产品图片")
-        self.assertEqual(sheet.print_area, "'配置清单'!$A$1:$N$100")
-        self.assertGreater(
-            sum(1 for row in sheet.iter_rows() for cell in row if isinstance(cell.value, str) and cell.value.startswith("=")),
-            0,
+        self.assertEqual(sheet.freeze_panes, "A3")
+        self.assertEqual(sheet.print_area, "'配置清单'!$A$1:$N$2")
+        self.assertEqual({str(item) for item in sheet.merged_cells.ranges}, {"A1:N1"})
+        self.assertFalse(
+            any(
+                cell.value is not None
+                for row in sheet.iter_rows(min_row=3, max_row=sheet.max_row)
+                for cell in row
+            )
         )
+        self.assertTrue(all(sheet.cell(3, column).has_style for column in range(1, 15)))
+        self.assertEqual(len(sheet._images), 0)
+
+        unmatched = workbook["未匹配需求汇总"]
+        self.assertEqual(unmatched["A1"].value, "{{学校名称}}生涯心理学生发展中心未匹配需求汇总")
+        self.assertEqual(unmatched.freeze_panes, "A3")
+        self.assertEqual(unmatched.print_area, "'未匹配需求汇总'!$A$1:$H$2")
+        self.assertEqual({str(item) for item in unmatched.merged_cells.ranges}, {"A1:H1"})
+        self.assertFalse(
+            any(
+                cell.value is not None
+                for row in unmatched.iter_rows(min_row=3, max_row=unmatched.max_row)
+                for cell in row
+            )
+        )
+        self.assertTrue(all(unmatched.cell(3, column).has_style for column in range(1, 9)))
 
     def test_inserts_exact_catalog_image_without_overwriting_input(self):
         with tempfile.TemporaryDirectory() as temporary_directory:

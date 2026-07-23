@@ -33,7 +33,7 @@ Calculate SHA-256 from the original bytes of every listed fixed resource and use
 
 Treat `standard-products.json` together with its `image_catalog` metadata and `assets/product-images/` as a read-only image bundle. Before an image is used, verify that its relative path remains under `assets/product-images/`, its SHA-256 equals the selected product's `image_refs[].sha256`, and the ref has `role=primary`, `confidence=exact`, and `match_rule=normalized-name-brand-model-v1`. The image is visual support only: it never identifies a product, proves a model, or replaces the catalog source record.
 
-Use the default workbook only when the user supplied no template. Treat the intake asset as input schema 1.1, not as a project-state object or approval.
+Use the default workbook only when the user supplied no template. It is a generic blank layout: it contains only `{{学校名称}}` title placeholders, headers, blank styled rows, and a reserved `产品图片` column—never project facts, sample products, fixed subtotals, or fixed formulas. For a default-template output, populate the title, detail rows, formulas, subtotals, grand totals, and print area dynamically from the approved plan. Preserve a user-supplied template's reliable formulas, merges, print areas, summaries, and styling instead. Treat the intake asset as input schema 1.1, not as a project-state object or approval.
 
 ## Execute A–H
 
