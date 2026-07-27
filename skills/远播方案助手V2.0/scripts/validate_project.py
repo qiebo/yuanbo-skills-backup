@@ -166,6 +166,40 @@ def check_final_text(text: str, evidence: list[dict[str, str]], findings: list[F
         findings.append(Finding("warning", "COMPETITION_EVIDENCE", "终稿提及竞赛/赛事，但未发现已核实的赛事证据记录", "07_方案终稿.md"))
 
 
+def check_stage_docs(project: Path, findings: list[Finding]) -> None:
+    """阶段文档完整性门槛：防止 00/01/02 等文档停留在空模板就推进。
+
+    - 01_需求确认.md、02_调研与证据报告.md 为硬门槛（疑似空模板→error，阻断交付）；
+    - 其余阶段文档为软提示（warning）。
+    判定以"去除标题后的实质字数"低于阈值为准（裸模板通常只有 30~50 字）。
+    """
+    hard = {"01_需求确认.md": 60, "02_调研与证据报告.md": 80}
+    soft = {
+        "00_执行计划.md": 80, "03_顶层设计决策.md": 80, "04_方案大纲.md": 60,
+        "05_方案初稿.md": 60, "06_评审汇总.md": 60, "08_交付说明.md": 40,
+    }
+    markers = ("以 `data/", "为准", "工作区", "TODO", "待确认", "示例")
+
+    def body_len(text: str) -> int:
+        body = re.sub(r"(?m)^\s*#.*$", "", text)
+        return len(re.sub(r"\s", "", body))
+
+    for name, minlen in hard.items():
+        p = project / name
+        if not p.exists():
+            continue
+        text = p.read_text(encoding="utf-8")
+        if body_len(text) < minlen:
+            findings.append(Finding("error", "STAGE_DOC_EMPTY", f"{name} 实质内容不足（去除标题后 {body_len(text)} 字），疑似空模板，请填写实质内容后再推进", name))
+    for name, minlen in soft.items():
+        p = project / name
+        if not p.exists():
+            continue
+        text = p.read_text(encoding="utf-8")
+        if body_len(text) < minlen and any(m in text for m in markers):
+            findings.append(Finding("warning", "STAGE_DOC_THIN", f"{name} 内容偏薄（去除标题后 {body_len(text)} 字），建议补充实质内容", name))
+
+
 def write_reports(project: Path, findings: list[Finding], metrics: dict) -> None:
     qa = project / "qa"
     qa.mkdir(exist_ok=True)
@@ -218,6 +252,7 @@ def main() -> int:
     check_pending(pending, findings)
     check_mapping(mapping, findings)
     check_implementation(implementation, findings)
+    check_stage_docs(project, findings)
     check_final_text((project / "07_方案终稿.md").read_text(encoding="utf-8"), evidence, findings)
 
     val_cfg = config.get("validation", {})

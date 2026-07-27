@@ -13,7 +13,11 @@
         "client": {"type": "string"},
         "title": {"type": "string", "minLength": 1},
         "version": {"type": "string"},
-        "date": {"type": "string"}
+        "date": {"type": "string"},
+        "language": {"type": "string"},
+        "confidentiality": {"type": "string", "description": "封面标签（内部资料/客户交流版/提交版/征求意见稿）；留空则封面不显示"},
+        "confirmation_mode": {"enum": ["full", "core", "each"], "description": "节点确认强度：full=全自主 / core=仅核心节点(默认) / each=逐节点确认"},
+        "external_authoritative": {"type": "string", "description": "外部权威文件路径/文件名：设备命名与价格的唯一来源，Word 仅概念引用"}
       }
     },
     "output": {
@@ -23,9 +27,15 @@
         "filename": {"type": "string", "pattern": "\\.docx$"},
         "stylepack": {"type": "string", "pattern": "\\.docx$"},
         "toc": {"type": "boolean"},
-        "numbered_sections": {"type": "boolean"}
+        "toc_mode": {"enum": ["static", "field", "none"]},
+        "numbered_sections": {"type": "boolean"},
+        "header_text": {"type": "string"},
+        "footer_page_number": {"type": "boolean"},
+        "font": {"type": "string", "description": "正文与表格统一字体，默认微软雅黑"},
+        "first_line_indent": {"description": "正文段首缩进（字符数，2=空两格；0=关闭）"}
       }
     },
-    "validation": {"type": "object"}
+    "validation": {"type": "object"},
+    "review": {"type": "object"}
   }
 }

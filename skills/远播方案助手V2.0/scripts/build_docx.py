@@ -173,6 +173,87 @@ def set_cell_shading(cell, fill: str = "D9EAF7") -> None:
         tc_pr.append(shd)
     shd.set(qn("w:fill"), fill)
 
+
+DEFAULT_FONT = "微软雅黑"
+# 首行缩进单位按"字符数"理解（中文排版惯例：正文段首空两格 = 2 字符）
+DEFAULT_FIRST_LINE_INDENT_CHARS = 2
+
+
+def set_run_font(run, font: str) -> None:
+    """同时设置 eastAsia/ascii/hAnsi，确保中文与西文都落到指定字体。"""
+    run.font.name = font
+    rpr = run._element.get_or_add_rPr()
+    rfonts = rpr.find(qn("w:rFonts"))
+    if rfonts is None:
+        rfonts = rpr.makeelement(qn("w:rFonts"), {})
+        rpr.append(rfonts)
+    rfonts.set(qn("w:eastAsia"), font)
+    rfonts.set(qn("w:ascii"), font)
+    rfonts.set(qn("w:hAnsi"), font)
+
+
+def apply_font_and_indent(doc: Document, font: str, indent_chars) -> None:
+    """统一字体（正文/表格单元格/页眉页脚/样式默认）+ 正文段首缩进（按字符数）。
+
+    - 字体应用到所有 run（含表格单元格、页眉页脚），并写入样式默认值兜底未显式 run。
+    - 首行缩进仅作用于正文叙事段，跳过标题/封面/目录/空段；表格单元格显式不缩进。
+    """
+    # 1) 样式默认字体兜底
+    for style in doc.styles:
+        try:
+            rpr = style.element.get_or_add_rPr()
+            rfonts = rpr.find(qn("w:rFonts"))
+            if rfonts is None:
+                rfonts = rpr.makeelement(qn("w:rFonts"), {})
+                rpr.append(rfonts)
+            rfonts.set(qn("w:eastAsia"), font)
+            rfonts.set(qn("w:ascii"), font)
+            rfonts.set(qn("w:hAnsi"), font)
+        except Exception:
+            pass
+    # 2) 正文段落 run 字体
+    for p in doc.paragraphs:
+        for run in p.runs:
+            set_run_font(run, font)
+    # 3) 表格单元格 run 字体 + 显式不缩进
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for p in cell.paragraphs:
+                    p.paragraph_format.first_line_indent = Pt(0)
+                    p.paragraph_format.left_indent = Pt(0)
+                    for run in p.runs:
+                        set_run_font(run, font)
+    # 4) 页眉页脚 run 字体
+    for section in doc.sections:
+        for hf in (section.header, section.footer, section.first_page_header, section.first_page_footer):
+            for p in hf.paragraphs:
+                for run in p.runs:
+                    set_run_font(run, font)
+    # 5) 正文段首缩进（跳过标题/封面/目录/空段）
+    try:
+        chars = float(indent_chars)
+    except (TypeError, ValueError):
+        chars = DEFAULT_FIRST_LINE_INDENT_CHARS if indent_chars else 0
+    if chars and chars > 0:
+        for p in doc.paragraphs:
+            style_name = p.style.name if p.style else ""
+            if any(k in style_name for k in ("Heading", "Cover", "Title", "TOC")):
+                continue
+            if p.paragraph_format.left_indent is not None:  # 目录条目等带左缩进的段落
+                continue
+            if not p.text.strip():
+                continue
+            size = None
+            for run in p.runs:
+                if run.font.size:
+                    size = run.font.size.pt
+                    break
+            if size is None:
+                size = 12
+            p.paragraph_format.first_line_indent = Pt(chars * size)
+
+
 def postprocess(docx_path: Path, project: dict, output_cfg: dict, markdown_text: str) -> dict:
     doc = Document(docx_path)
     insert_front_matter(doc, project, output_cfg, markdown_text)
@@ -221,6 +302,13 @@ def postprocess(docx_path: Path, project: dict, output_cfg: dict, markdown_text:
                         if row_index == 0:
                             run.bold = True
 
+    # 统一字体与正文段首缩进（可配置 output.font / output.first_line_indent）
+    apply_font_and_indent(
+        doc,
+        output_cfg.get("font", DEFAULT_FONT),
+        output_cfg.get("first_line_indent", DEFAULT_FIRST_LINE_INDENT_CHARS),
+    )
+
     set_update_fields(doc)
     doc.core_properties.title = project.get("title", "")
     doc.core_properties.subject = project.get("name", "")
@@ -239,6 +327,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="构建方案 Word")
     parser.add_argument("project_dir")
     parser.add_argument("--force", action="store_true", help="允许在校验未通过时构建，仅用于调试")
+    parser.add_argument("--overwrite", action="store_true", help="覆盖写同名输出文件；若已存在先备份为 _备份_时间戳，避免时间戳改名导致的后处理错位")
     args = parser.parse_args()
 
     pandoc = require_tool("pandoc")
@@ -266,9 +355,15 @@ def main() -> int:
     output_dir.mkdir(exist_ok=True)
     filename = output_cfg.get("filename") or f"{project.get('name', '方案')}_{project.get('version', 'v1.0')}.docx"
     output_path = output_dir / filename
+    backup_path = None
     if output_path.exists():
         stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_path = output_path.with_name(f"{output_path.stem}_{stamp}{output_path.suffix}")
+        if args.overwrite:
+            # 覆盖模式：先备份旧版，再以干净文件名重写，避免后续后处理错位
+            backup_path = output_path.with_name(f"{output_path.stem}_备份_{stamp}{output_path.suffix}")
+            shutil.copy2(output_path, backup_path)
+        else:
+            output_path = output_path.with_name(f"{output_path.stem}_{stamp}{output_path.suffix}")
 
     markdown_text = source.read_text(encoding="utf-8")
     with tempfile.TemporaryDirectory(prefix="yb_docx_") as td:
@@ -295,10 +390,16 @@ def main() -> int:
     stats = postprocess(output_path, project, output_cfg, markdown_text)
     manifest = {
         "source": str(source), "output": str(output_path), "stylepack": str(stylepack),
-        "project_version": project.get("version"), "stats": stats, "built_at": datetime.now().isoformat(timespec="seconds")
+        "project_version": project.get("version"), "stats": stats,
+        "backup": str(backup_path) if backup_path else None,
+        "font": output_cfg.get("font", DEFAULT_FONT),
+        "first_line_indent": output_cfg.get("first_line_indent", DEFAULT_FIRST_LINE_INDENT_CHARS),
+        "built_at": datetime.now().isoformat(timespec="seconds")
     }
     (project_dir / "qa/build_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Word 已生成：{output_path}")
+    if backup_path:
+        print(f"旧版已备份：{backup_path}")
     print(f"段落 {stats['paragraphs']}，表格 {stats['tables']}，节 {stats['sections']}")
     return 0
 
