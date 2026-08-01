@@ -86,6 +86,7 @@
 - 是否把预期成果写成确定承诺；
 - 是否出现与数据表冲突的数量、金额、课时；
 - 是否存在整段可用于任何学校的通用话术。
+- 是否触发 `references/formal_dereification.md` 列出的 AI 腔模式（最毒句式、客套开场/结尾、模板过渡、空泛修饰、官腔空话、无证据强词）；该清单已由 `validate_project.py` 的 `check_formal_ai_tells` 自动扫描并报告（warning 级）。
 
 ### 面向客户的交付红线（初版 / 交流版）
 

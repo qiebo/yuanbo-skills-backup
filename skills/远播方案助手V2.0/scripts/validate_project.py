@@ -20,6 +20,26 @@ PLACEHOLDER_PATTERNS = [
 HIGH_RISK_WORDS = ["全国首个", "全市首个", "区域首个", "唯一", "率先", "领先", "填补空白", "示范标杆"]
 OVERCOMMIT_WORDS = ["必然", "百分之百", "绝对保证"]
 
+# 阶段 6.5：正式方案语言净化（去 AI 味）。
+# 复用通用去 AI 味的*检测*目录，但**不**套用其口语化注入配方（口语锚点/语气词/句子碎片等）
+# ——正式文档保留庄重文风、完整句与必要标点。全部 warning 级，不阻断交付。
+FORMAL_AI_TELL_PATTERNS = [
+    ("AI_TELL_TOXIC", r"不是[，,]\s*而是", "“不是A，而是B”最毒句式，直接写结论"),
+    ("AI_TELL_TOXIC", r"心中涌起|眼中闪过|声音不大，却", "情绪告知式空壳描写，用具体行为替代"),
+    ("AI_TELL_TOXIC", r"仿佛.{0,8}一般|犹如.{0,8}一般|宛若.{0,8}一般", "比喻陈词，改为白描"),
+    ("AI_TELL_TOXIC", r"(?:他|她)(?:知道|明白|终于明白了)", "认知告知，用行为展现"),
+    ("AI_TELL_OPEN", r"很高兴|当然可以|好的，我来|这是一个非常好的问题|感谢您的提问|非常感谢您", "客套开场，第一句直接给内容"),
+    ("AI_TELL_CLOSE", r"综上所述|总的来看|总而言之|总之，?|希望以上|如有任何疑问|希望对您|通过以上分析|这一刻", "结尾总结/升华套话，在最后一个有实质内容的句子结束"),
+    ("AI_TELL_TRANS", r"值得注意的是|需要指出的是|值得一提的是|不可忽视的是", "模板过渡词，直接接内容"),
+    ("AI_TELL_VAGUE", r"在某种程度上|从某种意义(?:上|来说)|一般来说|通常情况下|可以认为|可以说|总体而言", "模糊限定，删去或给出具体边界"),
+    ("AI_TELL_VAGUE", r"在相关部门的共同努力下|为.{0,12}奠定.{0,6}基础|持续赋能|强化.{0,8}能力建设|打造.{0,8}新格局|具有重要意义|具有重要的意义", "官腔空话，用主体+具体结果替代"),
+    ("AI_TELL_OVERCLAIM", r"打造区域标杆|全面领先|行业领先|国内一流|世界一流|对标一流", "无证据强词，改为可核实表述或降级为“拟/重点建设/对标”"),
+]
+FORMAL_FILLER_WORDS = [
+    "高质量", "显著提升", "显著增强", "扎实", "有力", "全方位", "多层次", "系统性",
+]
+FORMAL_CONNECTORS = ["此外", "然而", "因此", "与此同时", "另一方面"]
+
 
 @dataclass
 class Finding:
@@ -166,6 +186,27 @@ def check_final_text(text: str, evidence: list[dict[str, str]], findings: list[F
         findings.append(Finding("warning", "COMPETITION_EVIDENCE", "终稿提及竞赛/赛事，但未发现已核实的赛事证据记录", "07_方案终稿.md"))
 
 
+def check_formal_ai_tells(text: str, findings: list[Finding]) -> None:
+    """阶段 6.5：正式方案语言净化（去 AI 味）。
+
+    复用通用去 AI 味的*检测*目录（最毒句式/客套开场结尾/模板过渡/模糊限定/官腔空话/无证据强词/
+    空泛修饰/机械化连接词），但**不**套用其口语化注入配方——正式文档保留庄重文风、完整句与必要标点。
+    全部以 warning 级呈现，作为质量门禁提示，不阻断交付（语言润色非一票否决项）。
+    完整策略见 references/formal_dereification.md。
+    """
+    for code, pattern, suggestion in FORMAL_AI_TELL_PATTERNS:
+        for m in re.finditer(pattern, text):
+            line = text.count("\n", 0, m.start()) + 1
+            findings.append(Finding("warning", code, f"语言AI味（{m.group(0)}）：{suggestion}", f"07_方案终稿.md:{line}"))
+    for w in FORMAL_FILLER_WORDS:
+        for m in re.finditer(re.escape(w), text):
+            line = text.count("\n", 0, m.start()) + 1
+            findings.append(Finding("warning", "AI_TELL_FILLER", f"空泛修饰词『{w}』：建议补充对象与可量化尺度，或删除", f"07_方案终稿.md:{line}"))
+    conn = sum(len(re.findall(re.escape(c), text)) for c in FORMAL_CONNECTORS)
+    if conn > 3:
+        findings.append(Finding("warning", "AI_TELL_CONNECTOR", f"机械化连接词（此外/然而/因此/与此同时/另一方面）出现 {conn} 次，建议精简，避免模板感", "07_方案终稿.md"))
+
+
 def check_stage_docs(project: Path, findings: list[Finding]) -> None:
     """阶段文档完整性门槛：防止 00/01/02 等文档停留在空模板就推进。
 
@@ -253,7 +294,9 @@ def main() -> int:
     check_mapping(mapping, findings)
     check_implementation(implementation, findings)
     check_stage_docs(project, findings)
-    check_final_text((project / "07_方案终稿.md").read_text(encoding="utf-8"), evidence, findings)
+    final_text = (project / "07_方案终稿.md").read_text(encoding="utf-8")
+    check_final_text(final_text, evidence, findings)
+    check_formal_ai_tells(final_text, findings)
 
     val_cfg = config.get("validation", {})
     if metrics["requirements"]["coverage"] < float(val_cfg.get("require_requirement_coverage", 1.0)):

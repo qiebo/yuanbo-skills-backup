@@ -23,9 +23,9 @@ description: >
 
 ## 2. 强制原则
 
-### 2.1 禁止静默补全
+### 2.1 事实须有可靠依据
 
-下列信息没有可靠依据时，不得写成确定事实：
+写入确定事实前须已有可靠依据；下述信息若无依据，不得写成确定事实（即禁止静默补全）：
 
 - 学校现有基础、师资数量、课程数量、合作高校、获奖情况；
 - 设备型号、技术参数、数量、单价、折扣、税率；
@@ -234,6 +234,8 @@ description: >
 - 校训和学校基因必须转译为建设行为，不得只在结尾贴标签；
 - 避免万能形容词、同义反复和无法验收的宏大表述。
 
+**完成判定**：每章均可回链 `data/需求响应矩阵.csv` 中至少一条具体需求，全篇无挂起的待确认标记，且每个结论的力度不超过其证据等级，方可进入阶段 6。
+
 写作细则见 `references/writing_guide.md`。
 
 ### 阶段 6：确定性校验
@@ -257,6 +259,16 @@ python scripts/validate_project.py <项目目录>
 - 关键数字在正文和数据表中的冲突。
 
 校验失败时不得进入交付阶段。
+
+### 阶段 6.5：专业表达检验（去 AI 味门禁）
+
+终稿进入评审前，先跑语言净化检查，清除"空、套、虚、机械"的 AI 腔；但**不**套用口语化注入——正式文档保留庄重文风、完整句与必要标点。
+
+```bash
+python scripts/validate_project.py <项目目录>
+```
+
+新增检查项由 `check_formal_ai_tells` 执行，以 **warning 级** 呈现、不阻断交付。完整检测目录（最毒句式、客套开场/结尾、模板过渡、模糊限定、官腔空话、无证据强词、空泛修饰、机械化连接词）、改写策略与交付前自检清单，统一见 `references/formal_dereification.md`——该文件为唯一权威源，本阶段不重复罗列。warning 项应在交付前尽量减少，但语言润色非一票否决项。
 
 ### 阶段 7：自适应专家评审
 
@@ -368,6 +380,7 @@ python scripts/render_review.py <项目目录>/output/xxx.docx --output-dir <项
 - `references/document_type_rules.md`：不同文类的结构和评审差异。
 - `references/top_design_playbook.md`：学校基因与顶层设计方法。
 - `references/writing_guide.md`：正式方案写作规范。
+- `references/formal_dereification.md`：正式方案去 AI 味规则与自动检查口径（阶段 6.5）。
 - `references/review_rubric.md`：行为锚定评审量表。
 - `references/document_style_guide.md`：Word 样式与版式标准。
 - `references/feedback_revision.md`：批注、修订和版本迭代流程。
