@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""初始化一个远播方案助手 V2.0 项目目录。"""
+"""初始化一个远播方案助手 V2.1 项目目录。"""
 from __future__ import annotations
 
 import argparse

@@ -312,7 +312,7 @@ def postprocess(docx_path: Path, project: dict, output_cfg: dict, markdown_text:
     set_update_fields(doc)
     doc.core_properties.title = project.get("title", "")
     doc.core_properties.subject = project.get("name", "")
-    doc.core_properties.author = "远播方案助手V2.0"
+    doc.core_properties.author = "远播方案助手V2.1"
     doc.core_properties.comments = "由结构化源文件生成；正文修改应回到 Markdown 与数据台账。"
     doc.save(docx_path)
 
