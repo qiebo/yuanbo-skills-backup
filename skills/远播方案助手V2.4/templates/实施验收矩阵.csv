@@ -1,0 +1,2 @@
+phase_id,phase,responsible,prerequisite,task,deliverable,acceptance_criteria,start_date,end_date,dependency,risk,response,status
+I-001,项目启动,项目负责人,立项完成,完成需求确认,需求确认记录,需求矩阵强制项覆盖100%,,,无,需求不完整,召开确认会,pending

@@ -1,0 +1,3 @@
+requirement_id,source,original_text,type,priority,response,target_section,acceptance_method,status,notes
+R-001,测试输入,形成可实施的建设方案,mandatory,P0,形成目标建设实施验收完整闭环,全文,校验通过且实施验收矩阵完整,closed,
+R-002,测试输入,预算总额为20万元,constraint,P0,按设备软件服务分类测算,经费预算,预算表合计200000元,verified,

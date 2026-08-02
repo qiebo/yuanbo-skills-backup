@@ -1,0 +1,3 @@
+claim_id,claim,claim_type,risk_level,source_type,source_title,source_locator,source_date,checked_at,valid_until,authority_level,confidence,allowed_wording,target_sections,status,notes
+C-001,本项目拟建设人工智能学习空间,proposal,low,project_decision,项目需求确认,01_需求确认.md,,2026-07-10,,primary,high,本项目拟建设人工智能学习空间,建设内容,verified,
+C-002,项目预算目标为20万元,target,medium,user_document,测试需求,预算要求,,2026-07-10,,primary,high,项目预算控制在20万元以内,预算,verified,

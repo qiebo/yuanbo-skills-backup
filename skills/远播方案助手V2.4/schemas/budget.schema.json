@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "预算明细行",
+  "type": "object",
+  "required": ["item_id", "category", "name", "unit", "quantity", "unit_price", "subtotal", "currency", "status"],
+  "properties": {
+    "item_id": {"type": "string", "pattern": "^B-"},
+    "quantity": {"type": "number", "minimum": 0},
+    "unit_price": {"type": "number", "minimum": 0},
+    "subtotal": {"type": "number", "minimum": 0},
+    "status": {"enum": ["pending", "verified", "active", "excluded"]}
+  }
+}

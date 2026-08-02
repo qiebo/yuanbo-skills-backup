@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "需求响应矩阵行",
+  "type": "object",
+  "required": ["requirement_id", "original_text", "type", "priority", "status"],
+  "properties": {
+    "requirement_id": {"type": "string", "pattern": "^R-"},
+    "type": {"enum": ["mandatory", "preference", "constraint", "forbidden"]},
+    "priority": {"enum": ["P0", "P1", "P2"]},
+    "status": {"enum": ["open", "covered", "verified", "accepted", "closed"]}
+  }
+}

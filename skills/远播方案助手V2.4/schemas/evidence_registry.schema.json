@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "事实证据台账行",
+  "type": "object",
+  "required": ["claim_id", "claim", "claim_type", "risk_level", "status"],
+  "properties": {
+    "claim_id": {"type": "string", "pattern": "^C-"},
+    "claim": {"type": "string", "minLength": 1},
+    "claim_type": {"enum": ["verified_fact", "user_provided", "inference", "proposal", "target", "expected_outcome", "pending"]},
+    "risk_level": {"enum": ["high", "medium", "low"]},
+    "authority_level": {"enum": ["primary", "secondary", "tertiary", ""]},
+    "confidence": {"enum": ["high", "medium", "low", ""]},
+    "status": {"enum": ["verified", "pending", "rejected", "expired"]}
+  }
+}

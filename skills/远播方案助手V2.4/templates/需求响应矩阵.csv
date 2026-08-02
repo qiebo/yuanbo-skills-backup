@@ -1,0 +1,2 @@
+requirement_id,source,original_text,type,priority,response,target_section,acceptance_method,status,notes
+R-001,用户消息,示例：方案需体现学校特色,mandatory,P0,基于学校基因卡形成专属顶层设计,第三章,学校专属性测试通过,open,

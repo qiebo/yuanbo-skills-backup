@@ -1,0 +1,2 @@
+item_id,category,name,model,unit,quantity,unit_price,subtotal,currency,tax_included,price_basis,source_locator,valid_until,status,notes
+B-001,设备,示例设备,待确认,台,1,0,0,CNY,unknown,待确认,,2026-12-31,pending,示例行必须替换

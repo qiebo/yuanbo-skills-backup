@@ -1,0 +1,4 @@
+item_id,category,name,model,unit,quantity,unit_price,subtotal,currency,tax_included,price_basis,source_locator,valid_until,status,notes
+B-001,设备,教学工作站,测试配置,台,10,15000,150000,CNY,true,测试报价,测试报价单第1页,2026-12-31,active,
+B-002,软件,教学平台授权,年度授权,套,1,30000,30000,CNY,true,测试报价,测试报价单第2页,2026-12-31,active,
+B-003,服务,教师培训,8课时,项,1,20000,20000,CNY,true,测试报价,测试报价单第3页,2026-12-31,active,
