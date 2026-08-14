@@ -1,0 +1,860 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-13T13:58:41",
+  "source": "ERP §6 运行时实测（369 条 state=1 产品 + category/list 分类树），seed 2026-08-12",
+  "note": "薄映射层：仅含语义映射/主键映射/价格图片策略。产品内容运行期从 ERP §6 按需切片拉取（见 scripts/fetch_erp_catalog.py）。",
+  "price_policy": {
+    "market_price": "default_unit_price",
+    "channel_price": "default_agent_price",
+    "cost_price": "default_cost_price"
+  },
+  "image_policy": {
+    "source": "erp_image_url",
+    "locally_verified": false,
+    "confidence": "remote",
+    "match_rule": "erp-image-url-v1",
+    "download": false,
+    "note": "引用 ERP image_url 远程链接，不下载、不本地 SHA-256；非本地核验须在追溯审计标注"
+  },
+  "key_map": {
+    "catalog_product_key": "product_no",
+    "product_identity_key": "name|brand|model（brand/model 为 '/' 时仅用 name）",
+    "legacy_key_compat": "旧 standard-products.json 的 product_key 不再使用；如需回溯可按 product_no 关联"
+  },
+  "tag_routing": {
+    "space_suffixes": [
+      "室",
+      "教室",
+      "空间",
+      "中心",
+      "区",
+      "馆",
+      "厅"
+    ],
+    "space_allowlist": [
+      "个体辅导室",
+      "团体辅导室",
+      "多功能教室",
+      "学生发展中心",
+      "学职群教室",
+      "宣泄室",
+      "家校共育中心",
+      "心理健康中心",
+      "心理教室",
+      "情景分析室",
+      "放松室",
+      "教师办公室",
+      "文化大厅",
+      "沙盘室",
+      "测评室",
+      "生涯教室",
+      "科创中心",
+      "自我认知室"
+    ],
+    "brand_dictionary": [
+      "525",
+      "ASES",
+      "Brainco",
+      "Deheng",
+      "FITUEYES",
+      "LAMME/蓝魅",
+      "Lap Game（镜游）",
+      "Liberlive",
+      "soundbox",
+      "weeemake",
+      "世纪萌芽",
+      "中教启星",
+      "云度",
+      "众灵科技",
+      "优谷",
+      "佛山舒鑫智能",
+      "元萝卜",
+      "光峰",
+      "冬海维恩",
+      "南京优冠",
+      "可普",
+      "因时机器人",
+      "埃依斯",
+      "声博士配套",
+      "声美",
+      "宇树",
+      "展天",
+      "希沃",
+      "强脑",
+      "心理测评与预警",
+      "感音",
+      "新启蒙模型",
+      "朗心",
+      "泉州睿铎",
+      "深圳德普",
+      "生涯翼站",
+      "百草园",
+      "科大讯飞",
+      "第一高考网",
+      "绿萝心数",
+      "翼生涯",
+      "翼生涯/深圳德普",
+      "翼生涯/视颐",
+      "视颐",
+      "触想",
+      "贝德",
+      "远播",
+      "阳光心健",
+      "陆吾智能",
+      "雷鸟",
+      "音乐密码",
+      "魅族"
+    ],
+    "model_code_regex_hint": "含拉丁字母且含数字 / 形如 V1.0、FH75EA、LLXLYPT-V1.0 的 tag 视为型号噪声",
+    "rule": "tag 命中 space 规则→source_spaces；命中 brand_dictionary 或型号形态→忽略；其余→function_tags"
+  },
+  "category_fallback": {
+    "55": {
+      "category_name": "翼生涯志愿填报软件 V2.0",
+      "confidence": "low",
+      "source_spaces": [],
+      "function_tags": [
+        "志愿填报软件",
+        "算法",
+        "数据",
+        "决策",
+        "系统软件"
+      ]
+    },
+    "62": {
+      "category_name": "翼生涯学职信息软件V4.0",
+      "confidence": "low",
+      "source_spaces": [],
+      "function_tags": [
+        "学职信息软件",
+        "决策",
+        "探索",
+        "生涯",
+        "系统软件"
+      ]
+    },
+    "56": {
+      "category_name": "翼生涯教育局大数据软件v2.0",
+      "confidence": "low",
+      "source_spaces": [],
+      "function_tags": [
+        "学校大数据软件",
+        "数据",
+        "管理",
+        "系统软件"
+      ]
+    },
+    "57": {
+      "category_name": "翼生涯教辅资源软件V4.0",
+      "confidence": "low",
+      "source_spaces": [],
+      "function_tags": [
+        "教辅资源软件",
+        "视频",
+        "课程",
+        "探索",
+        "系统软件"
+      ]
+    },
+    "61": {
+      "category_name": "翼生涯学生成长档案软件V4.0",
+      "confidence": "low",
+      "source_spaces": [],
+      "function_tags": [
+        "学生成长档案软件",
+        "数据",
+        "辅导",
+        "兴趣",
+        "系统软件"
+      ]
+    },
+    "116": {
+      "category_name": "生涯中心-空间建设",
+      "confidence": "low",
+      "source_spaces": [
+        "学职群教室",
+        "自我认知室",
+        "测评室",
+        "家校共育中心",
+        "团体辅导室",
+        "放松室"
+      ],
+      "function_tags": [
+        "定制",
+        "文化长廊",
+        "生涯",
+        "规划",
+        "展示",
+        "智能",
+        "能力",
+        "探索",
+        "兴趣",
+        "决策"
+      ]
+    },
+    "117": {
+      "category_name": "生涯中心-生涯硬件设备",
+      "confidence": "low",
+      "source_spaces": [
+        "学职群教室",
+        "心理教室",
+        "生涯教室",
+        "团体辅导室",
+        "沙盘室",
+        "宣泄室"
+      ],
+      "function_tags": [
+        "互动",
+        "体验",
+        "展示墙",
+        "走廊",
+        "长廊",
+        "学职",
+        "智能",
+        "语音",
+        "AI",
+        "学职体验"
+      ]
+    },
+    "118": {
+      "category_name": "生涯中心-数智类设备",
+      "confidence": "low",
+      "source_spaces": [
+        "学职群教室",
+        "文化大厅"
+      ],
+      "function_tags": [
+        "文化长廊",
+        "语音",
+        "数智画框标准版IP形象及内容定制",
+        "智能",
+        "定制",
+        "数智人一体机",
+        "触摸屏",
+        "触控",
+        "数智画框互动版",
+        "互动"
+      ]
+    },
+    "52": {
+      "category_name": "翼生涯学生过程激励管理软件 V2.0",
+      "confidence": "low",
+      "source_spaces": [],
+      "function_tags": [
+        "学生过程激励管理软件",
+        "测评",
+        "生涯",
+        "系统软件"
+      ]
+    },
+    "120": {
+      "category_name": "科创中心-课程",
+      "confidence": "low",
+      "source_spaces": [],
+      "function_tags": [
+        "教师培训",
+        "航空航天",
+        "备赛辅导",
+        "脑机科学",
+        "神经工程",
+        "教学资源",
+        "长距离飞行器",
+        "空气动力学",
+        "飞行器设计",
+        "立方星"
+      ]
+    },
+    "121": {
+      "category_name": "科创中心-设备及耗材",
+      "confidence": "low",
+      "source_spaces": [],
+      "function_tags": [
+        "航空航天",
+        "竞赛训练",
+        "竞赛场地",
+        "四足机器人",
+        "信息素养提升实践活动A类竞赛",
+        "长距离飞行器",
+        "罐头卫星",
+        "脑机交互",
+        "火星救援",
+        "传感器实验"
+      ]
+    },
+    "58": {
+      "category_name": "翼生涯选科决策软件V4.0",
+      "confidence": "low",
+      "source_spaces": [],
+      "function_tags": [
+        "选科决策软件",
+        "报告",
+        "选科",
+        "系统软件"
+      ]
+    },
+    "59": {
+      "category_name": "翼生涯选排课辅助软件V4.0",
+      "confidence": "low",
+      "source_spaces": [],
+      "function_tags": [
+        "选排课辅助软件",
+        "智能",
+        "分析",
+        "系统软件"
+      ]
+    },
+    "60": {
+      "category_name": "翼生涯学生测评软件V4.0",
+      "confidence": "low",
+      "source_spaces": [
+        "自我认知室",
+        "测评室"
+      ],
+      "function_tags": [
+        "测评",
+        "系统软件",
+        "学生测评软件",
+        "兴趣",
+        "能力",
+        "生涯三件套软件",
+        "视频",
+        "课程"
+      ]
+    },
+    "53": {
+      "category_name": "翼生涯教学评价管理软件 V2.0",
+      "confidence": "low",
+      "source_spaces": [],
+      "function_tags": [
+        "教学评价管理软件",
+        "诊断",
+        "分析",
+        "数据",
+        "系统软件"
+      ]
+    },
+    "54": {
+      "category_name": "翼生涯导师导教工具软件 V2.0",
+      "confidence": "low",
+      "source_spaces": [],
+      "function_tags": [
+        "导师制软件",
+        "管理",
+        "系统软件"
+      ]
+    }
+  },
+  "space_to_query": {
+    "学职群教室": {
+      "category_ids": [],
+      "classification_ids": [
+        1,
+        5,
+        6
+      ],
+      "name_keywords": [
+        "学职群教室"
+      ]
+    },
+    "情景分析室": {
+      "category_ids": [],
+      "classification_ids": [
+        9,
+        6,
+        1
+      ],
+      "name_keywords": [
+        "情景分析室"
+      ]
+    },
+    "团体辅导室": {
+      "category_ids": [],
+      "classification_ids": [
+        1,
+        6,
+        8
+      ],
+      "name_keywords": [
+        "团体辅导室"
+      ]
+    },
+    "宣泄室": {
+      "category_ids": [],
+      "classification_ids": [
+        1,
+        12
+      ],
+      "name_keywords": [
+        "宣泄室"
+      ]
+    },
+    "沙盘室": {
+      "category_ids": [],
+      "classification_ids": [
+        1,
+        4,
+        8
+      ],
+      "name_keywords": [
+        "沙盘室"
+      ]
+    },
+    "学生发展中心": {
+      "category_ids": [],
+      "classification_ids": [
+        1
+      ],
+      "name_keywords": [
+        "学生发展中心"
+      ]
+    },
+    "心理健康中心": {
+      "category_ids": [],
+      "classification_ids": [
+        1
+      ],
+      "name_keywords": [
+        "心理健康中心"
+      ]
+    },
+    "科创中心": {
+      "category_ids": [
+        111
+      ],
+      "classification_ids": [],
+      "name_keywords": [],
+      "note": "人工修正：自动派生值为 cls=[1]（生涯自营文化，错误）；科创产品 tags 无空间词，按父类 111 整类切片（在售 48 条）"
+    },
+    "放松室": {
+      "category_ids": [],
+      "classification_ids": [
+        8,
+        1,
+        12
+      ],
+      "name_keywords": [
+        "放松室"
+      ]
+    },
+    "家校共育中心": {
+      "category_ids": [],
+      "classification_ids": [
+        8,
+        1,
+        9
+      ],
+      "name_keywords": [
+        "家校共育中心"
+      ]
+    },
+    "多功能教室": {
+      "category_ids": [],
+      "classification_ids": [
+        8,
+        1,
+        6
+      ],
+      "name_keywords": [
+        "多功能教室"
+      ]
+    },
+    "自我认知室": {
+      "category_ids": [],
+      "classification_ids": [
+        1,
+        8,
+        9
+      ],
+      "name_keywords": [
+        "自我认知室"
+      ]
+    },
+    "测评室": {
+      "category_ids": [],
+      "classification_ids": [
+        1,
+        8,
+        9
+      ],
+      "name_keywords": [
+        "测评室"
+      ]
+    },
+    "心理教室": {
+      "category_ids": [],
+      "classification_ids": [
+        1,
+        6,
+        8
+      ],
+      "name_keywords": [
+        "心理教室"
+      ]
+    },
+    "生涯教室": {
+      "category_ids": [],
+      "classification_ids": [
+        1,
+        6,
+        8
+      ],
+      "name_keywords": [
+        "生涯教室"
+      ]
+    },
+    "个体辅导室": {
+      "category_ids": [],
+      "classification_ids": [
+        1,
+        4,
+        8
+      ],
+      "name_keywords": [
+        "个体辅导室"
+      ]
+    },
+    "教师办公室": {
+      "category_ids": [],
+      "classification_ids": [
+        1,
+        4,
+        8
+      ],
+      "name_keywords": [
+        "教师办公室"
+      ]
+    },
+    "文化大厅": {
+      "category_ids": [],
+      "classification_ids": [
+        1,
+        8,
+        73
+      ],
+      "name_keywords": [
+        "文化大厅"
+      ]
+    },
+    "其他": {
+      "category_ids": [
+        43
+      ],
+      "classification_ids": [],
+      "name_keywords": []
+    },
+    "翼生涯系统": {
+      "category_ids": [
+        44
+      ],
+      "classification_ids": [],
+      "name_keywords": []
+    },
+    "生涯工具": {
+      "category_ids": [
+        45
+      ],
+      "classification_ids": [],
+      "name_keywords": []
+    },
+    "咨询及培训": {
+      "category_ids": [
+        46
+      ],
+      "classification_ids": [],
+      "name_keywords": []
+    },
+    "研学背提": {
+      "category_ids": [
+        50
+      ],
+      "classification_ids": [],
+      "name_keywords": []
+    },
+    "留学服务": {
+      "category_ids": [
+        51
+      ],
+      "classification_ids": [],
+      "name_keywords": []
+    },
+    "招生服务": {
+      "category_ids": [
+        90
+      ],
+      "classification_ids": [],
+      "name_keywords": []
+    },
+    "定制软件开发": {
+      "category_ids": [
+        100
+      ],
+      "classification_ids": [],
+      "name_keywords": []
+    },
+    "学生中心": {
+      "category_ids": [
+        109
+      ],
+      "classification_ids": [],
+      "name_keywords": []
+    },
+    "生涯中心": {
+      "category_ids": [
+        112
+      ],
+      "classification_ids": [],
+      "name_keywords": []
+    },
+    "中高考规划服务": {
+      "category_ids": [
+        113
+      ],
+      "classification_ids": [],
+      "name_keywords": []
+    },
+    "国际升学规划服务": {
+      "category_ids": [
+        114
+      ],
+      "classification_ids": [],
+      "name_keywords": []
+    },
+    "求职规划服务": {
+      "category_ids": [
+        115
+      ],
+      "classification_ids": [],
+      "name_keywords": []
+    }
+  },
+  "role_map": {
+    "44": "软件平台"
+  },
+  "schema_note": "人工覆盖层（overlay）：build_product_mapping.py 生成 product-mapping.json 时对本文件做深合并（dict 递归、其余类型覆盖）。此处维护 ERP 中不存在的人工知识：业务线路由、需求词→ERP 关键词同义词、空间条目修正。重跑 build 不丢失。",
+  "maintained_by": "人工维护",
+  "updated_at": "2026-08-13",
+  "query_routing": {
+    "business_lines": {
+      "生涯": {
+        "category_ids": [
+          112,
+          44,
+          45
+        ],
+        "classification_ids": [],
+        "name_keywords": [],
+        "note": "生涯中心(112) + 翼生涯系统(44) + 生涯工具(45)；严格对应 ERP 启用大类"
+      },
+      "科创": {
+        "category_ids": [
+          111
+        ],
+        "classification_ids": [],
+        "name_keywords": [],
+        "note": "科创中心(111)：课程(120)/设备及耗材(121)/空间建设(122)/科创服务(123)"
+      }
+    },
+    "note": "business_lines 严格对齐 ERP 启用大类，不做虚拟拼盘。通用物资（桌椅/触控屏等）不设入口：走 --keywords 全库搜索或 category/list 实时发现。停用大类（实验室/科创项目）不纳入；ERP 新增大类时在此加一行。"
+  },
+  "keyword_aliases_usage": "需求词 → ERP 关键词数组。值可同时指向 tags 词与 小类/分组名（fetch --keywords 客户端收窄时按 产品名+tags+小类名+分组名 任一命中保留）。随用随补。",
+  "keyword_aliases": {
+    "机器人": [
+      "机器人",
+      "四足机器人",
+      "具身智能",
+      "具身智能课程",
+      "具身智能硬件和耗材"
+    ],
+    "无人机": [
+      "飞行器",
+      "长距离飞行器",
+      "航空航天"
+    ],
+    "航模": [
+      "长距离飞行器",
+      "航空航天",
+      "飞行"
+    ],
+    "卫星": [
+      "立方星",
+      "罐头卫星",
+      "CubeSat",
+      "CanSat",
+      "卫星"
+    ],
+    "航天": [
+      "航空航天",
+      "立方星",
+      "罐头卫星",
+      "航天课程",
+      "航天硬件和耗材"
+    ],
+    "航空": [
+      "航空航天",
+      "长距离飞行器",
+      "航空课程",
+      "航空硬件和耗材"
+    ],
+    "脑机": [
+      "脑机交互",
+      "脑机科学",
+      "脑控",
+      "脑机科学课程",
+      "脑机科学硬件和耗材"
+    ],
+    "编程": [
+      "编程",
+      "编程控制",
+      "卫星编程",
+      "开源硬件",
+      "仿真软件"
+    ],
+    "创客": [
+      "科创",
+      "机器人",
+      "编程",
+      "3D建模"
+    ],
+    "STEAM": [
+      "科创",
+      "机器人",
+      "编程",
+      "航空航天",
+      "脑机交互"
+    ],
+    "科创": [
+      "科创",
+      "航空航天",
+      "机器人",
+      "脑机交互",
+      "科创课程",
+      "科创耗材硬件"
+    ],
+    "竞赛": [
+      "竞赛",
+      "竞赛训练",
+      "竞赛课程",
+      "竞赛场地",
+      "备赛辅导",
+      "信息素养提升实践活动A类竞赛"
+    ],
+    "课程": [
+      "课程",
+      "教学资源",
+      "科创课程",
+      "航空课程",
+      "航天课程"
+    ],
+    "教师培训": [
+      "教师培训",
+      "备赛辅导"
+    ],
+    "心理": [
+      "心理",
+      "宣泄",
+      "放松",
+      "沙盘",
+      "心理辅导",
+      "心理设备"
+    ],
+    "疏导": [
+      "宣泄",
+      "放松",
+      "心理辅导",
+      "心理设备"
+    ],
+    "情绪": [
+      "宣泄",
+      "放松",
+      "情绪",
+      "心理设备"
+    ],
+    "宣泄": [
+      "宣泄",
+      "宣泄室",
+      "呐喊"
+    ],
+    "放松": [
+      "放松",
+      "放松室",
+      "催眠",
+      "音乐"
+    ],
+    "沙盘": [
+      "沙盘",
+      "沙盘室",
+      "心理沙盘"
+    ],
+    "测评": [
+      "测评",
+      "测评室",
+      "学生测评软件",
+      "评估"
+    ],
+    "团体": [
+      "团体",
+      "团体辅导",
+      "团体辅导室"
+    ],
+    "生涯": [
+      "生涯",
+      "生涯规划",
+      "生涯教室",
+      "学职",
+      "生涯教具"
+    ],
+    "职业规划": [
+      "生涯",
+      "学职",
+      "职业",
+      "生涯规划"
+    ],
+    "选科": [
+      "选科",
+      "选科决策软件"
+    ],
+    "志愿": [
+      "志愿填报",
+      "志愿填报软件"
+    ],
+    "一体机": [
+      "一体机",
+      "触控",
+      "生涯触控一体机（测评、学职、教辅）"
+    ],
+    "桌椅": [
+      "桌子",
+      "椅子",
+      "讲台",
+      "拼接桌"
+    ],
+    "家具": [
+      "桌子",
+      "椅子",
+      "沙发",
+      "柜子"
+    ],
+    "文化墙": [
+      "文化墙",
+      "文化长廊",
+      "展板",
+      "墙布",
+      "生涯自营文化"
+    ],
+    "静音舱": [
+      "静音舱",
+      "隔音"
+    ],
+    "展示": [
+      "展示",
+      "展示墙",
+      "画框",
+      "数智画框"
+    ]
+  },
+  "overlay_ref": {
+    "path": "product-mapping.overlay.json",
+    "sha256": "051163ecbe2c29839e660765fa62eec86fdc4162c79337ac5694dec452c008c8",
+    "note": "人工覆盖层已合并；本字段记录其指纹以便审计区分自动层/人工层变化"
+  }
+}
