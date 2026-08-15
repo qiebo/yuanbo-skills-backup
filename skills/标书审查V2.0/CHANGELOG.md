@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.1.0]
+### Added
+- 技术参数证明材料汇总：references/review-baseline-template.md §五新增「技术参数响应证明材料要求汇总表」（无论是否 ★/▲ 均提取并标注出处）；references/report-template.md 新增「三·五、证明材料汇总对比」章节；子代理提示词新增 ③·五 逐项核查指引
+- 每份响应独立 HTML 报告：新增 assets/file-report-template.html（15 token，复用汇总模板暗色 CSS）；SKILL.md 第5步拆为 5a 每份渲染 / 5b 汇总渲染
+- 汇总模板 assets/report-template.html 新增证明材料汇总对比 section 与 TECH_PROOF_TABLE / TECH_PROOF_NOTES 两个 token（17 → 19 token）
+- examples/ 新增 file_report_01_data.json + file_report_01.html（每份报告样例）；baseline.md / subagent_report_01.md / final_report.md / report_data.json 同步补证明材料表并保持自洽
+
+### Changed
+- SKILL.md frontmatter version 2.0.0 → 2.1.0；description 增补「技术参数证明材料汇总与每份独立HTML报告」
+- examples/README.md 更新文件清单与端到端命令（含每份渲染命令）
+
+### Notes
+- 纯模板/文档改动：render_report.py 等脚本零改动、零新增依赖；渲染 token 数由模板动态扫描，脚本无需感知
+
 ## [2.0.0]
 ### Added
 - P2-8 补遗/澄清合并：scripts/merge_addenda.py + 审查基准「补遗与澄清清单」字段 + SKILL.md 多输入/合并工作流

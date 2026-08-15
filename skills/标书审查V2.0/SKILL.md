@@ -1,8 +1,8 @@
 ---
 name: 标书审查
-version: 2.0.0
-description: 中文招投标响应文件（投标/磋商响应）合规审查。抽取招标文件与多份响应文件，提取废标（无效响应）条款与重点（★/▲）条款作为审查基准，用并行子代理逐份比对，产出废标矩阵、分级问题清单与页面友好 HTML 报告。支持补遗/澄清合并、多份响应评分估算与电子标核查。When a user has a 招标文件 (采购文件/磋商文件) plus one or more 响应文件 (投标/磋商响应) and asks to 检查/审查/核对 标书符合性、废标风险、实质性响应 or find problems.
-description_zh: 中文招投标响应文件合规审查。抽取招标与多份响应文件，提取废标条款与重点（★/▲）条款为基准，并行子代理比对，产出废标矩阵、分级问题清单与页面友好 HTML 报告。支持补遗/澄清合并、评分估算与电子标核查。
+version: 2.1.0
+description: 中文招投标响应文件（投标/磋商响应）合规审查。抽取招标文件与多份响应文件，提取废标（无效响应）条款与重点（★/▲）条款作为审查基准，用并行子代理逐份比对，产出废标矩阵、分级问题清单与页面友好 HTML 报告。支持补遗/澄清合并、多份响应评分估算与电子标核查、技术参数证明材料汇总与每份独立HTML报告。When a user has a 招标文件 (采购文件/磋商文件) plus one or more 响应文件 (投标/磋商响应) and asks to 检查/审查/核对 标书符合性、废标风险、实质性响应 or find problems.
+description_zh: 中文招投标响应文件合规审查。抽取招标与多份响应文件，提取废标条款与重点（★/▲）条款为基准，并行子代理比对，产出废标矩阵、分级问题清单与页面友好 HTML 报告。支持补遗/澄清合并、评分估算与电子标核查、技术参数证明材料汇总与每份独立HTML报告。
 category: document-review
 agent_created: true
 tags: 招投标,标书审查,废标,投标,磋商响应,符合性,合规,document-review
@@ -16,7 +16,7 @@ install_source: local
 ## 何时使用
 
 - 用户给出 **1 个招标文件**（采购文件 / 磋商文件）和 **1~N 个响应文件**（投标 / 磋商响应），要求「检查 / 审查 / 核对 / 找问题 / 看会不会废标 / 符合性审查」。
-- 适用产物：废标（无效响应）项矩阵、资格性与符合性核查、重点（★/▲）条款响应对比、分级问题清单（🔴废标风险 / 🟠严重 / 🟡一般 / 🟢建议）、页面友好的 HTML 报告。
+- 适用产物：废标（无效响应）项矩阵、资格性与符合性核查、重点（★/▲）条款响应对比、技术参数证明材料汇总对比（含出处）、分级问题清单（🔴废标风险 / 🟠严重 / 🟡一般 / 🟢建议）、**每份响应独立 HTML 分析报告 + 汇总 HTML 报告**。
 
 ## 核心工作流（6 步）
 
@@ -30,7 +30,7 @@ install_source: local
 2. **提取审查基准（含补遗合并）**：
    - 先跑机械装配：`.venv\Scripts\python.exe scripts/merge_addenda.py --tender output/招标文件.md --addenda output/补遗1.md output/补遗2.md --out output/审查基准_合并输入.md`
      得到【补遗清单】+【拼接全文】+【疑似冲突条款清单】。
-   - 精读 招标文件 + 各补遗，按 `references/review-baseline-template.md` 提取：项目信息、废标（无效响应）条款清单、资格性条件、符合性/形式要求、采购需求与重点（★/▲）条款、评分标准、偏离表要求。写入 `output/审查基准.md`。
+   - 精读 招标文件 + 各补遗，按 `references/review-baseline-template.md` 提取：项目信息、废标（无效响应）条款清单、资格性条件、符合性/形式要求、采购需求与重点（★/▲）条款、评分标准、偏离表要求，**并按 §五『技术参数响应证明材料要求汇总表』提取（无论是否 ★/▲，标注出处）**。写入 `output/审查基准.md`。
    - 冲突条款以「后发布者（补遗/澄清）优先」裁决，写入基准的「补遗与澄清清单」字段。
 2.5 **图片证据目检**（消除"无法判定"盲区）：
    对 `output/images/<safe>/` 下每张 `img_NNN.png`（`<safe>` = 源文件名stem + 源文件绝对路径md5前6位，按源文件哈希分目录），用 Read 工具查看，对照 checklist 相关条目判定：签章是否齐全真实、证书/执照是否在有效期内、信用截图是否有水印或 PS 痕迹、业绩合同是否缺签名。判读结论写入子代理报告，并标注来源文件名（如 `images/<safe>/img_003.png`）。
@@ -44,10 +44,13 @@ install_source: local
      `.venv\Scripts\python.exe scripts/score_estimate.py --baseline output/审查基准.md --docs output/响应文件_01.md output/响应文件_02.md [--out output/评分估算.md]`
      读取其「得分对比」与「零分项预警」，纳入终审报告对应章节。
    随后主代理读取所有子代理报告、机检与评分估算结果，交叉核对废标项触及情况，去重定级，按 `references/report-template.md` 产出 `output/终审汇总报告.md`。对全部 🔴 项抽查回读 `output/` 原文验证，位置不可核查者降级为无法判定。
-5. **HTML 呈现**：把终审报告各区块拼为 HTML 片段，写入 `output/report_data.json`（键=token，值=HTML 片段），调用脚本渲染：
+5. **HTML 呈现**（每份独立报告 + 汇总报告，均脚本渲染）：
+   - 5a **每份响应独立报告**：主代理读 `output/子代理报告_XX.md`，按 `assets/file-report-template.html` 的 15 个 token 组装 `output/report_data_XX.json`（键=token，值=HTML 片段），调用：
+     `.venv\Scripts\python.exe scripts/render_report.py --template assets/file-report-template.html --data output/report_data_XX.json --out output/子代理报告_XX.html [--strict]`
+   - 5b **汇总报告**：把终审报告各区块拼为 HTML 片段，写入 `output/report_data.json`（须含 `assets/report-template.html` 全部 19 个 token，含证明材料汇总 TECH_PROOF_TABLE / TECH_PROOF_NOTES），调用：
      `.venv\Scripts\python.exe scripts/render_report.py --template assets/report-template.html --data output/report_data.json --out output/终审汇总报告.html [--strict]`
    脚本替换全部 `{{token}}`；若有残留 `{{}}` 会告警（`--strict` 时退出非 0）。
-   兜底（脚本异常时）：仍按模板视觉风格手工替换后 `grep -n "{{" output/终审汇总报告.html` 校验为 0 再交付。
+   兜底（脚本异常时）：仍按模板视觉风格手工替换后 `grep -n "{{" output/*.html` 校验为 0 再交付。
 6. **交付与说明**：present 报告，并明确「图片证据 / 签章原件无法由文本判定」的限制与免责。
 
 ## 三条铁律（来自真实审查经验，务必遵守）
@@ -72,6 +75,7 @@ install_source: local
 > ① 废标项逐条核查表（触及/未触及/无法判定 + 证据位置与说明）；
 > ② 资格性与形式要求逐条核查；
 > ③ 采购需求响应逐项核查（重点标 ★/▲，指出材料是否提供）；
+> ③·五 技术参数响应证明材料核查：对照基准『证明材料要求汇总表』逐项判定 提供/未提供/图片需核对（图片按铁律2 不臆断），给出 [技术参数/条款|要求材料|本文件是否提供|证据位置/出处]；
 > ④ 评分项逐项估分（对照基准「评分标准」表）：对每项给出 [分项 | 估分(保守) | 是否可能0分 | 依据/不确定性]；
 >    客观项有材料按保守成数估、无材料记0；主观项给区间并标注不确定性高；
 >    证据为图片者写「需核对原件」，不得臆断分值（定量得分对比表由 score_estimate.py 机算，见第4步）。

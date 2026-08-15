@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>甲示例科技股份有限公司 · 响应文件审查报告（脱敏样例）</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1d2129; --line:#2a2f3a;
+    --txt:#e7eaee; --muted:#9aa3b2; --accent:#4f8cff; --accent2:#2dd4bf;
+    --red:#ff5d5d; --redbg:rgba(255,93,93,.12);
+    --amber:#ffb648; --amberbg:rgba(255,182,72,.12);
+    --green:#37d67a; --greenbg:rgba(55,214,122,.12);
+    --blue:#4f8cff; --bluebg:rgba(79,140,255,.12);
+    --shadow:0 6px 24px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);
+    font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",-apple-system,"Segoe UI",sans-serif;
+    line-height:1.7;font-size:15px}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 22px 64px}
+  header.hero{background:linear-gradient(135deg,#1b2540,#10141d);
+    border:1px solid var(--line);border-radius:18px;padding:28px 30px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  header.hero:after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;
+    background:radial-gradient(circle,rgba(79,140,255,.25),transparent 70%);border-radius:50%}
+  .tag{display:inline-block;font-size:12px;color:var(--accent2);border:1px solid rgba(45,212,191,.4);
+    padding:3px 10px;border-radius:999px;letter-spacing:.5px;background:rgba(45,212,191,.08)}
+  h1{font-size:25px;margin:12px 0 6px;line-height:1.35}
+  .sub{color:var(--muted);font-size:14px}
+  .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:18px}
+  .meta div{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px}
+  .meta b{color:var(--accent);font-weight:600}
+  .note{margin-top:18px;background:var(--amberbg);border:1px solid rgba(255,182,72,.4);
+    border-radius:12px;padding:14px 16px;font-size:13.5px;color:#ffd79a}
+  .note b{color:var(--amber)}
+  section{margin-top:34px}
+  h2{font-size:20px;border-left:4px solid var(--accent);padding-left:12px;margin:0 0 16px}
+  h2 .en{color:var(--muted);font-size:13px;font-weight:400;margin-left:8px}
+  h3{font-size:16px;margin:22px 0 10px;color:var(--txt)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+  table{width:100%;border-collapse:collapse;margin-top:6px;font-size:13.5px;overflow:hidden;border-radius:10px}
+  th,td{border:1px solid var(--line);padding:10px 9px;text-align:center;vertical-align:middle}
+  th{background:var(--panel2);color:var(--txt);font-weight:600}
+  td.lbl{text-align:left;background:rgba(255,255,255,.02);color:var(--muted)}
+  .c-no{background:var(--greenbg);color:var(--green);font-weight:600}
+  .c-yes{background:var(--redbg);color:var(--red);font-weight:600}
+  .c-unk{background:var(--amberbg);color:var(--amber);font-weight:600}
+  .star{color:var(--red);font-weight:700}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin:10px 0 4px;font-size:12.5px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .dot.no{background:var(--green)} .dot.yes{background:var(--red)} .dot.unk{background:var(--amber)}
+  /* file cards */
+  .files{display:grid;grid-template-columns:1fr;gap:18px}
+  .fcard{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel);box-shadow:var(--shadow)}
+  .fhead{padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line)}
+  .fhead .fno{font-weight:700;font-size:15px;color:#fff;background:var(--accent);border-radius:8px;padding:4px 10px;min-width:34px;text-align:center}
+  .fhead .ftitle{font-size:16px;font-weight:600}
+  .fhead .fprice{margin-left:auto;font-size:13px;color:var(--muted);text-align:right}
+  .fbody{padding:16px 18px}
+  .lvl{margin:14px 0 4px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px}
+  .lvl.r{color:var(--red)} .lvl.o{color:var(--amber)} .lvl.y{color:#7cc4ff} .lvl.g{color:var(--green)}
+  .badge{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:700}
+  .badge.r{background:var(--redbg);color:var(--red)}
+  .badge.o{background:var(--amberbg);color:var(--amber)}
+  .badge.y{background:var(--bluebg);color:#7cc4ff}
+  .badge.g{background:var(--greenbg);color:var(--green)}
+  ul.cl{list-style:none;margin:6px 0 0;padding:0}
+  ul.cl li{position:relative;padding:7px 0 7px 22px;border-bottom:1px dashed rgba(255,255,255,.06);font-size:13.5px}
+  ul.cl li:before{content:"▸";position:absolute;left:4px;color:var(--accent);top:7px}
+  ul.cl li:last-child{border-bottom:none}
+  /* priority */
+  .prio{display:grid;gap:14px}
+  .pbox{border-radius:14px;padding:16px 18px;border:1px solid var(--line)}
+  .pbox.r{background:var(--redbg);border-color:rgba(255,93,93,.35)}
+  .pbox.o{background:var(--amberbg);border-color:rgba(255,182,72,.35)}
+  .pbox.y{background:var(--bluebg);border-color:rgba(79,140,255,.35)}
+  .pbox h3{margin:0 0 10px;display:flex;align-items:center;gap:8px}
+  .pbox ol{margin:0;padding-left:20px}
+  .pbox li{margin:7px 0;font-size:13.5px}
+  .common{display:grid;gap:12px}
+  .common .ci{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:10px;padding:12px 16px;font-size:14px}
+  .common .ci b{color:var(--accent)}
+  .concl{background:linear-gradient(135deg,rgba(45,212,191,.08),rgba(79,140,255,.08));
+    border:1px solid var(--line);border-radius:14px;padding:20px;font-size:14.5px}
+  .concl b{color:var(--accent2)}
+  footer{margin-top:40px;color:var(--muted);font-size:12.5px;text-align:center;border-top:1px solid var(--line);padding-top:18px}
+  a.dl{color:var(--accent);text-decoration:none;border-bottom:1px dashed rgba(79,140,255,.5)}
+  a.dl:hover{color:#9bc0ff}
+  @media print{
+    body{background:#fff;color:#111}
+    .card,table,th,td,.fcard{box-shadow:none}
+    header.hero{background:#fff}
+    .c-no{color:#0a7} .c-yes{color:#c00} .c-unk{color:#b56}
+    .note{background:#fff7e6;border-color:#f0c36d}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <span class="tag">招投标合规审查 · 单份响应分析</span>
+    <h1>甲示例科技股份有限公司 响应文件合规审查报告</h1>
+    <div class="sub">虚构智慧校园平台采购项目 · 项目编号 XN-2024-TEST-001 · 单份响应独立分析 · 脱敏虚构样例</div>
+    <div class="meta">
+<div><b>响应文件</b><br>resp_good.md（文件甲）</div><div><b>投标总报价</b><br>620000.00 元</div><div><b>最高限价</b><br>600000 元（补遗第2号调减）</div><div><b>总体结论</b><br>触及废标情形（报价超限）</div>
+    </div>
+    <div class="note">
+      <b>⚠ 重要说明：</b>本报告基于<b>文本抽取</b>与机械核查生成，不含图片 OCR 与视觉鉴伪。凡证据以图片承载者一律判「无法判定 / 需核对原件」（铁律2，<b>既不等于已满足也不等于未满足</b>）。评分项为<b>保守辅助估分，非评标结论</b>。本报告不构成法律意见。
+    </div>
+  </header>
+
+  <!-- 一句话结论 -->
+  <div class="concl" style="margin-top:30px">
+    <b>结论：</b>甲材料相对齐备，技术参数响应（并发 8000）优于招标要求（5000），但<b>报价 620000 元超出补遗第2号调减后的最高限价 600000 元，触及废标情形第 6 项</b>，须在截止前重新报价；团队证明材料与签字盖章均以图片承载，需核对原件；另缺补遗第2号新增的 CA 电子签章响应说明。
+  </div>
+
+  <!-- ① 废标项逐条核查 -->
+  <section>
+    <h2>① 废标项逐条核查表 <span class="en">最高优先级</span></h2>
+    <div class="legend">
+      <span><i class="dot no"></i>未触及（文本可确认不触发）</span>
+      <span><i class="dot yes"></i>触及（文本明确触发）</span>
+      <span><i class="dot unk"></i>无法判定（取决于图片 / 原件 / 实物）</span>
+      <span class="star">★ = 实物 / 图片一缺即废标的高风险项</span>
+    </div>
+    <div class="card" style="overflow-x:auto">
+<table><tr><th>废标情形</th><th>结论</th><th>证据位置与说明</th></tr><tr><td class='lbl'>1 未提交保证金 <span class='star'>★</span></td><td class='c-unk'>无法判定</td><td class='lbl'>保证金凭证为图片 images/resp_good/img_002.png，需核对原件</td></tr><tr><td class='lbl'>6 报价 &gt; 最高限价</td><td class='c-yes'>触及</td><td class='lbl'>【原文】「投标总报价：620000.00 元」【位置：第一章 报价部分，约第 1 页】；补遗2号限价 600000，超 20000</td></tr><tr><td class='lbl'>8 签字盖章不齐全 <span class='star'>★</span></td><td class='c-unk'>无法判定</td><td class='lbl'>签章页为图片 images/resp_good/img_001.png，需核对 CA 证书有效期</td></tr></table>
+    </div>
+  </section>
+
+  <!-- ② 资格性与形式要求 -->
+  <section>
+    <h2>② 资格性与形式要求核查</h2>
+    <ul class="cl">
+<li><b>营业执照：</b>见图片，无法判定（需核对原件）。</li><li><b>资格性条件总体：</b>未见明显不符；财务 / 税收 / 社保 / 信用材料以图片承载，待原件核对。</li>
+    </ul>
+  </section>
+
+  <!-- ③ 采购需求响应 -->
+  <section>
+    <h2>③ 采购需求响应逐项核查 <span class="en">★/▲ 实质性条款</span></h2>
+    <ul class="cl">
+<li><b>▲第七条 平台并发：</b>响应 8000 用户，优于要求 5000【位置：技术参数章，约第 3 页】。</li><li><b>▲第八条 实施团队：</b>7 人 / 2 名高工领衔【位置：项目人员章，约第 2 页】，证明材料以图片承载（见 ③·五）。</li>
+    </ul>
+  </section>
+
+  <!-- ③·五 技术参数响应证明材料核查 -->
+  <section>
+    <h2>③·五 技术参数响应证明材料核查 <span class="en">含出处 · 不臆断</span></h2>
+    <div class="legend">
+      <span><i class="dot no"></i>提供（文本可确认）</span>
+      <span><i class="dot yes"></i>未提供（全文未见）</span>
+      <span><i class="dot unk"></i>图片需核对（铁律2 不臆断）</span>
+    </div>
+    <div class="card" style="overflow-x:auto">
+<table><tr><th>技术参数/条款</th><th>要求材料</th><th>本文件是否提供</th><th>证据位置/出处</th></tr><tr><td class='lbl'>▲第七条 平台并发 ≥ 5000 用户</td><td>第三方并发实测检测报告</td><td class='c-no'>提供</td><td class='lbl'>【原文】「已附第三方检测报告编号 JC-2024-0811」【位置：技术参数章，约第 3 页】（出处：第三章第七条，约第 12 页）</td></tr><tr><td class='lbl'>▲第八条 实施团队 ≥ 5 人且高级工程师领衔</td><td>团队人员名单、高级工程师证书、社保缴纳记录、承诺函</td><td class='c-unk'>图片需核对</td><td class='lbl'>均为扫描图片 images/resp_good/img_003.png，铁律2 不臆断【位置：项目人员章，约第 2 页】（出处：第三章第八条，约第 13 页）</td></tr></table>
+    </div>
+  </section>
+
+  <!-- ④ 评分项逐项估分 -->
+  <section>
+    <h2>④ 评分项逐项估分 <span class="en">保守估分 · 非评标结论</span></h2>
+    <div class="legend">
+      <span><i class="dot no"></i>X = 客观项保守点估（按满分 8 成）</span>
+      <span><i class="dot no"></i>X~Y = 主观项区间估（50%~80%）</span>
+      <span><i class="dot yes"></i>0 = 零分风险</span>
+      <span><i class="dot unk"></i>? = 无法判定（图片 / 仅标题 / 不可定位）</span>
+    </div>
+    <div class="card" style="overflow-x:auto">
+<table><tr><th>分项</th><th>满分</th><th>估分(保守)</th><th>是否可能0分</th><th>依据/不确定性</th></tr><tr><td class='lbl'>报价</td><td>30</td><td class='c-yes'>0</td><td class='c-yes'>是</td><td class='lbl'>620000 &gt; 补遗2号限价 600000，机检 FAIL → 0</td></tr><tr><td class='lbl'>技术参数</td><td>25</td><td>12.5~20</td><td class='c-no'>否</td><td class='lbl'>响应 8000&gt;5000 且附检测报告，主观分区间</td></tr><tr><td class='lbl'>项目人员配置</td><td>20</td><td>16</td><td class='c-no'>否</td><td class='lbl'>7 人+2 高工，正文有材料，保守 8 成</td></tr><tr><td class='lbl'>类似业绩</td><td>15</td><td>12</td><td class='c-no'>否</td><td class='lbl'>3 项合同，正文有材料，保守 8 成</td></tr><tr><td class='lbl'>服务方案</td><td>10</td><td>5~8</td><td class='c-no'>否</td><td class='lbl'>有实施方案，主观分区间</td></tr><tr><td class='lbl'><b>总分区间</b></td><td><b>100</b></td><td colspan='3'><b>45.5~63</b>（保守下界 ~ 理论上界；报价已记 0）</td></tr></table>
+    </div>
+  </section>
+
+  <!-- ⑤ 价格合规 -->
+  <section>
+    <h2>⑤ 价格合规 <span class="en">机检结论为准</span></h2>
+    <div class="card">
+<ul class='cl'><li><b>总报价 ≤ 限价：FAIL。</b>总报价 620000 &gt; 限价 600000（补遗第2号调减后），机检 FAIL（verify_prices，总价@L9 限价@L10）。</li><li><b>明细合计 = 一览表：</b>PASS（机检）。</li><li><b>大小写一致：</b>PASS（机检）。</li><li>结论以第 3.5 步机检脚本输出为准，不靠 LLM 心算。</li></ul>
+    </div>
+  </section>
+
+  <!-- ⑥ 分级问题清单 -->
+  <section>
+    <h2>⑥ 分级问题清单 <span class="en">🔴/🟠/🟡/🟢</span></h2>
+    <div class="card">
+<div class='lvl r'>🔴 废标风险 <span class='badge r'>1 项</span></div><ul class='cl'><li><b>报价超出补遗第2号修改后的最高限价 20000 元。</b>【原文】「投标总报价：620000.00 元」【位置：第一章，约第 1 页】。建议截止前重新报价至 600000 以内。</li></ul><div class='lvl o'>🟠 严重 <span class='badge o'>1 项</span></div><ul class='cl'><li>未见针对补遗第2号「CA 数字证书电子签章」要求的响应说明。建议补充 CA 证书有效期截图与平台上传回执。</li></ul><div class='lvl y'>🟡 一般 <span class='badge y'>1 项</span></div><ul class='cl'><li>营业执照、社保、执业证书、业绩合同均以图片承载，文本不可判定，需核对原件。</li></ul><div class='lvl g'>🟢 建议</div><ul class='cl'><li>技术参数为正偏离，建议在偏离表显式标注「正偏离」以免被误判不一致。</li></ul>
+    </div>
+  </section>
+
+  <!-- ⑦ 总体结论与整改 -->
+  <section>
+    <h2>⑦ 总体结论与整改建议</h2>
+    <div class="concl">
+<b>总体结论：</b>甲材料相对齐备、技术响应优于要求，但<b>报价超限触及废标情形，须重新报价</b>；电子标要素（CA 签章）缺失；图片类证据均需核对原件。<b>截止前最紧急整改：</b>① 重新报价至 600000 元以内；② 补 CA 电子签章与上传回执；③ 携带全部图片证据原件备查。
+    </div>
+  </section>
+
+  <footer>
+    本报告由「标书审查」skill V2.1 生成 · <b>脱敏虚构样例，数据均为测试用途，不涉及任何真实标书</b> · 保守估分非评标结论 · 不构成法律意见
+  </footer>
+
+</div>
+</body>
+</html>

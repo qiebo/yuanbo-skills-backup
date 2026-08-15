@@ -100,9 +100,9 @@
 <div class="wrap">
 
   <header class="hero">
-    <span class="tag">招投标合规审查 · 终审汇总</span>
-    <h1>{{PROJECT_TITLE}}</h1>
-    <div class="sub">{{PROJECT_SUB}}</div>
+    <span class="tag">招投标合规审查 · 单份响应分析</span>
+    <h1>{{FILE_TITLE}}</h1>
+    <div class="sub">{{FILE_SUB}}</div>
     <div class="meta">
 {{META_CARDS}}
     </div>
@@ -116,9 +116,9 @@
     {{ONE_LINE}}
   </div>
 
-  <!-- 一、废标矩阵 -->
+  <!-- ① 废标项逐条核查 -->
   <section>
-    <h2>一、废标（无效响应）项触及情况对比矩阵 <span class="en">用户首要关注</span></h2>
+    <h2>① 废标项逐条核查表 <span class="en">最高优先级</span></h2>
     <div class="legend">
       <span><i class="dot no"></i>未触及（文本可确认不触发）</span>
       <span><i class="dot yes"></i>触及（文本明确触发）</span>
@@ -128,84 +128,72 @@
     <div class="card" style="overflow-x:auto">
 {{VOID_TABLE}}
     </div>
-    <div class="card" style="margin-top:14px;background:var(--redbg);border-color:rgba(255,93,93,.35)">
-      <b style="color:var(--red)">结论：</b>{{VOID_CONCLUSION}}
-    </div>
   </section>
 
-  <!-- 二、重点条款 -->
+  <!-- ② 资格性与形式要求 -->
   <section>
-    <h2>二、重点条款（★/▲）响应对比 <span class="en">实质性响应风险</span></h2>
-    <div class="card" style="overflow-x:auto">
-{{KEY_TABLE}}
-    </div>
-    <ul class="cl" style="margin-top:14px">
-{{KEY_LIST}}
+    <h2>② 资格性与形式要求核查</h2>
+    <ul class="cl">
+{{QUAL_LIST}}
     </ul>
   </section>
 
-  <!-- 二·五、得分对比 -->
+  <!-- ③ 采购需求响应 -->
   <section>
-    <h2>得分对比（多份响应文件竞争力评估） <span class="en">保守估分 · 非评标结论</span></h2>
-    <div class="legend">
-      <span><i class="dot no"></i>X = 客观项保守点估（有材料，按满分 8 成）</span>
-      <span><i class="dot no"></i>X~Y = 主观项区间估（50%~80%，不确定性高）</span>
-      <span><i class="dot yes"></i>0 = 零分风险（未见材料 / 报价超限）</span>
-      <span><i class="dot unk"></i>? = 无法判定（证据为图片 / 仅章节标题 / 不可定位）</span>
-    </div>
-    <div class="card" style="overflow-x:auto">
-{{SCORE_TABLE}}
-    </div>
-    <ul class="cl" style="margin-top:14px">
-{{SCORE_NOTES}}
+    <h2>③ 采购需求响应逐项核查 <span class="en">★/▲ 实质性条款</span></h2>
+    <ul class="cl">
+{{REQ_LIST}}
     </ul>
   </section>
 
-  <!-- 三·五、证明材料汇总对比 -->
+  <!-- ③·五 技术参数响应证明材料核查 -->
   <section>
-    <h2>技术部分要求提供的证明材料汇总对比 <span class="en">含出处 · 不臆断</span></h2>
+    <h2>③·五 技术参数响应证明材料核查 <span class="en">含出处 · 不臆断</span></h2>
     <div class="legend">
       <span><i class="dot no"></i>提供（文本可确认）</span>
       <span><i class="dot yes"></i>未提供（全文未见）</span>
       <span><i class="dot unk"></i>图片需核对（铁律2 不臆断）</span>
     </div>
     <div class="card" style="overflow-x:auto">
-{{TECH_PROOF_TABLE}}
-    </div>
-    <ul class="cl" style="margin-top:14px">
-{{TECH_PROOF_NOTES}}
-    </ul>
-  </section>
-
-  <!-- 三、分文件问题 -->
-  <section>
-    <h2>三、各文件重点问题（已分级）</h2>
-    <div class="files">
-{{PER_FILE_CARDS}}
+{{PROOF_TABLE}}
     </div>
   </section>
 
-  <!-- 四、横向共性 -->
+  <!-- ④ 评分项逐项估分 -->
   <section>
-    <h2>四、横向共性问题（多份文件通病）</h2>
-    <div class="common">
-{{COMMON_ISSUES}}
+    <h2>④ 评分项逐项估分 <span class="en">保守估分 · 非评标结论</span></h2>
+    <div class="legend">
+      <span><i class="dot no"></i>X = 客观项保守点估（按满分 8 成）</span>
+      <span><i class="dot no"></i>X~Y = 主观项区间估（50%~80%）</span>
+      <span><i class="dot yes"></i>0 = 零分风险</span>
+      <span><i class="dot unk"></i>? = 无法判定（图片 / 仅标题 / 不可定位）</span>
+    </div>
+    <div class="card" style="overflow-x:auto">
+{{SCORE_TABLE}}
     </div>
   </section>
 
-  <!-- 五、紧急整改 -->
+  <!-- ⑤ 价格合规 -->
   <section>
-    <h2>五、截止前最紧急整改清单 <span class="en">按优先级</span></h2>
-    <div class="prio">
-{{ACTION_BOXES}}
+    <h2>⑤ 价格合规 <span class="en">机检结论为准</span></h2>
+    <div class="card">
+{{PRICE_BOX}}
     </div>
   </section>
 
-  <!-- 六、评审建议 -->
+  <!-- ⑥ 分级问题清单 -->
   <section>
-    <h2>六、评审建议</h2>
+    <h2>⑥ 分级问题清单 <span class="en">🔴/🟠/🟡/🟢</span></h2>
+    <div class="card">
+{{ISSUE_LIST}}
+    </div>
+  </section>
+
+  <!-- ⑦ 总体结论与整改 -->
+  <section>
+    <h2>⑦ 总体结论与整改建议</h2>
     <div class="concl">
-{{ADVICE}}
+{{CONCLUSION}}
     </div>
   </section>
 
