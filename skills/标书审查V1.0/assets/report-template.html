@@ -98,7 +98,6 @@
 </head>
 <body>
 <div class="wrap">
-
   <header class="hero">
     <span class="tag">招投标合规审查 · 终审汇总</span>
     <h1>{{PROJECT_TITLE}}</h1>
@@ -110,12 +109,10 @@
       <b>⚠ 重要说明：</b>{{DISCLAIMER}}
     </div>
   </header>
-
   <!-- 一句话结论 -->
   <div class="concl" style="margin-top:30px">
     {{ONE_LINE}}
   </div>
-
   <!-- 一、废标矩阵 -->
   <section>
     <h2>一、废标（无效响应）项触及情况对比矩阵 <span class="en">用户首要关注</span></h2>
@@ -132,7 +129,6 @@
       <b style="color:var(--red)">结论：</b>{{VOID_CONCLUSION}}
     </div>
   </section>
-
   <!-- 二、重点条款 -->
   <section>
     <h2>二、重点条款（★/▲）响应对比 <span class="en">实质性响应风险</span></h2>
@@ -143,7 +139,37 @@
 {{KEY_LIST}}
     </ul>
   </section>
-
+  <!-- 二·五、得分对比 -->
+  <section>
+    <h2>得分对比（多份响应文件竞争力评估） <span class="en">保守估分 · 非评标结论</span></h2>
+    <div class="legend">
+      <span><i class="dot no"></i>X = 客观项保守点估（有材料，按满分 8 成）</span>
+      <span><i class="dot no"></i>X~Y = 主观项区间估（50%~80%，不确定性高）</span>
+      <span><i class="dot yes"></i>0 = 零分风险（未见材料 / 报价超限）</span>
+      <span><i class="dot unk"></i>? = 无法判定（证据为图片 / 仅章节标题 / 不可定位）</span>
+    </div>
+    <div class="card" style="overflow-x:auto">
+{{SCORE_TABLE}}
+    </div>
+    <ul class="cl" style="margin-top:14px">
+{{SCORE_NOTES}}
+    </ul>
+  </section>
+  <!-- 三·五、证明材料汇总对比 -->
+  <section>
+    <h2>技术部分要求提供的证明材料汇总对比 <span class="en">含出处 · 不臆断</span></h2>
+    <div class="legend">
+      <span><i class="dot no"></i>提供（文本可确认）</span>
+      <span><i class="dot yes"></i>未提供（全文未见）</span>
+      <span><i class="dot unk"></i>图片需核对（铁律2 不臆断）</span>
+    </div>
+    <div class="card" style="overflow-x:auto">
+{{TECH_PROOF_TABLE}}
+    </div>
+    <ul class="cl" style="margin-top:14px">
+{{TECH_PROOF_NOTES}}
+    </ul>
+  </section>
   <!-- 三、分文件问题 -->
   <section>
     <h2>三、各文件重点问题（已分级）</h2>
@@ -151,7 +177,6 @@
 {{PER_FILE_CARDS}}
     </div>
   </section>
-
   <!-- 四、横向共性 -->
   <section>
     <h2>四、横向共性问题（多份文件通病）</h2>
@@ -159,7 +184,6 @@
 {{COMMON_ISSUES}}
     </div>
   </section>
-
   <!-- 五、紧急整改 -->
   <section>
     <h2>五、截止前最紧急整改清单 <span class="en">按优先级</span></h2>
@@ -167,7 +191,6 @@
 {{ACTION_BOXES}}
     </div>
   </section>
-
   <!-- 六、评审建议 -->
   <section>
     <h2>六、评审建议</h2>
@@ -175,11 +198,9 @@
 {{ADVICE}}
     </div>
   </section>
-
   <footer>
     {{FOOTER_LINKS}}
   </footer>
-
 </div>
 </body>
 </html>

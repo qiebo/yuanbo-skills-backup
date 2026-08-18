@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Extract a .pdf into structured Markdown for bid/tender review (V1.1).
-
 Usage:
     python extract_pdf.py <input.pdf> [output.md] [--extract-images] [--image-dir output/images]
-
 Uses pdfplumber. Preserves heading hierarchy (inferred from font size), tables,
 and exports images as `[IMAGE: images/<safe>/img_NNN.png]` markers, matching the
 docx extractor's output style so the same downstream pipeline can consume both.
@@ -14,8 +12,6 @@ import os
 import argparse
 import hashlib
 import pdfplumber
-
-
 def median_font(pdf):
     sizes = []
     for page in pdf.pages:
@@ -26,13 +22,9 @@ def median_font(pdf):
         return 10.0
     sizes.sort()
     return sizes[len(sizes) // 2]
-
-
 def font_size_of_line(chars):
     sizes = [c.get('size') or 0 for c in chars if c.get('size')]
     return max(sizes) if sizes else 0
-
-
 def heading_level(size, body_size):
     if size >= body_size * 1.5:
         return 1
@@ -41,8 +33,6 @@ def heading_level(size, body_size):
     if size >= body_size * 1.1:
         return 3
     return None
-
-
 def group_lines(chars, tol=1.0):
     """Group chars into visual lines ordered by (top, x0)."""
     if not chars:
@@ -60,8 +50,6 @@ def group_lines(chars, tol=1.0):
             cur_top = c['top']
     lines.append(cur)
     return lines
-
-
 def table_to_md(tbl):
     if not tbl:
         return ""
@@ -72,8 +60,6 @@ def table_to_md(tbl):
         if i == 0:
             out.append("|" + "|".join(["---"] * max(len(cells), 1)) + "|")
     return "\n".join(out)
-
-
 def in_any_table(chars, bboxes):
     """True if every char of the line sits inside some table bbox."""
     if not bboxes or not chars:
@@ -87,8 +73,6 @@ def in_any_table(chars, bboxes):
         if not inside:
             return False
     return True
-
-
 def extract(pdf_path, out_path=None, extract_images=False, image_dir="output/images"):
     lines = []
     with pdfplumber.open(pdf_path) as pdf:
@@ -133,8 +117,6 @@ def extract(pdf_path, out_path=None, extract_images=False, image_dir="output/ima
     else:
         print(content)
     return content
-
-
 def main():
     ap = argparse.ArgumentParser(description="Extract a .pdf into Markdown (V1.1).")
     ap.add_argument("input", help="input .pdf path")
@@ -145,7 +127,5 @@ def main():
                     help="base dir for exported images (default: output/images)")
     args = ap.parse_args()
     extract(args.input, args.output, args.extract_images, args.image_dir)
-
-
 if __name__ == "__main__":
     main()

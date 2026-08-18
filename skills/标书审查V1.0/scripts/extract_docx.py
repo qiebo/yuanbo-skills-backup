@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Extract a .docx into structured Markdown for bid/tender review (V1.1).
-
 Usage:
     python extract_docx.py <input.docx> [output.md] [--extract-images] [--image-dir output/images]
-
 Design notes (built from real bid-review experience):
 - Preserves Heading / Title styles as Markdown '#'..'######' so the reviewer
   can navigate the document structure.
@@ -26,21 +24,15 @@ from docx import Document
 from docx.oxml.ns import qn
 from docx.table import Table
 from docx.text.paragraph import Paragraph
-
 # Namespace URIs (kept explicit for VML which python-docx's qn may not map).
 W = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'
 R = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
 A = 'http://schemas.openxmlformats.org/drawingml/2006/main'
 VML = 'urn:schemas-microsoft-com:vml'
 O = 'urn:schemas-microsoft-com:office:office'
-
 NS = {'w': W, 'r': R, 'a': A, 'v': VML, 'o': O}
-
-
 def _tag(prefix, local):
     return '{%s}%s' % (NS[prefix], local)
-
-
 def iter_block_items(parent):
     """Yield (kind, item) for paragraphs and tables in document order."""
     body = parent.element.body
@@ -49,8 +41,6 @@ def iter_block_items(parent):
             yield ('p', Paragraph(child, parent))
         elif child.tag == qn('w:tbl'):
             yield ('t', Table(child, parent))
-
-
 def style_level(p):
     """Return heading level (1-6) for heading/title styles, else None."""
     try:
@@ -65,11 +55,8 @@ def style_level(p):
         digits = ''.join(ch for ch in s if ch.isdigit())
         return int(digits) if digits else 2
     return None
-
-
 def collect_images(element, part, img_dir, safe, counter):
     """Return [(rel_path, abs_path), ...] for every image inside element's xml.
-
     Handles both inline drawings (a:blip/@r:embed) and legacy VML pictures
     (w:pict > v:imagedata/@r:id or w:shape/@o:relid). De-dupes by relationship id.
     """
@@ -87,7 +74,6 @@ def collect_images(element, part, img_dir, safe, counter):
             rid = node.get(_tag('o', 'relid')) or node.get(_tag('r', 'id'))
             if rid:
                 rids.append(rid)
-
     out = []
     seen = set()
     for rid in rids:
@@ -106,8 +92,6 @@ def collect_images(element, part, img_dir, safe, counter):
             f.write(ip.blob)
         out.append((f"images/{safe}/{fn}", p))
     return out
-
-
 def txbx_text(element):
     """Extract text from nested text boxes (w:txbxContent)."""
     txts = []
@@ -117,11 +101,8 @@ def txbx_text(element):
             if s.strip():
                 txts.append(s.strip())
     return "\n".join(txts)
-
-
 def table_to_md(table, part, img_dir, safe, counter):
     """Emit a Markdown table.
-
     Uses python-docx's *normalised* cells (table.rows / row.cells), which
     already expand merged cells (gridSpan repeats the cell across the spanned
     grid columns; vMerge repeats it down the spanned rows). This keeps every
@@ -142,8 +123,6 @@ def table_to_md(table, part, img_dir, safe, counter):
         ncols = len(out[0].split("|")) - 2  # leading/trailing pipes
         out.insert(1, "|" + "|".join(["---"] * ncols) + "|")
     return "\n".join(out)
-
-
 def header_footer_md(doc, part, img_dir, safe, counter):
     """Capture default header / footer text and tables as comment blocks."""
     blocks = []
@@ -159,8 +138,6 @@ def header_footer_md(doc, part, img_dir, safe, counter):
                     blocks.append(f"<!-- {label} TABLE -->")
                     blocks.append(md)
     return "\n".join(blocks)
-
-
 def extract(docx_path, out_path=None, extract_images=False, image_dir="output/images"):
     doc = Document(docx_path)
     part = doc.part
@@ -172,7 +149,6 @@ def extract(docx_path, out_path=None, extract_images=False, image_dir="output/im
     counter = [0]
     para_idx = 0
     page_idx = 1
-
     def emit_block(block, element=None):
         nonlocal para_idx, page_idx
         lines.append(f"\n<!-- §{para_idx} ¶约第{page_idx}页 -->")
@@ -183,7 +159,6 @@ def extract(docx_path, out_path=None, extract_images=False, image_dir="output/im
         if block:
             lines.extend(block)
         para_idx += 1
-
     for kind, item in iter_block_items(doc):
         if kind == 'p':
             el = item._element
@@ -206,11 +181,9 @@ def extract(docx_path, out_path=None, extract_images=False, image_dir="output/im
             block.append(table_to_md(item, part, image_dir, safe, counter))
             block.append("[/TABLE]")
             emit_block(block, item._element)
-
     hf = header_footer_md(doc, part, image_dir, safe, counter)
     if hf:
         lines.append("\n" + hf)
-
     content = "\n".join(lines).strip() + "\n"
     if out_path:
         os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
@@ -220,8 +193,6 @@ def extract(docx_path, out_path=None, extract_images=False, image_dir="output/im
     else:
         print(content)
     return content
-
-
 def main():
     ap = argparse.ArgumentParser(description="Extract a .docx into Markdown (V1.1).")
     ap.add_argument("input", help="input .docx path")
@@ -232,7 +203,5 @@ def main():
                     help="base dir for exported images (default: output/images)")
     args = ap.parse_args()
     extract(args.input, args.output, args.extract_images, args.image_dir)
-
-
 if __name__ == "__main__":
     main()

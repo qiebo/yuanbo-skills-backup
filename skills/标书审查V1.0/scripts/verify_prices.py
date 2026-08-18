@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Mechanical price / consistency checks for bid/tender review (V1.1).
-
 Usage:
     python verify_prices.py --baseline output/审查基准.md --doc output/<响应>.md [--limit 650000]
-
 Three checks (numbers, not LLM arithmetic):
   1. 明细合计 = 一览表总价   (detail table amount column sum == headline total)
   2. 总报价 <= 限价          (total <= limit; --limit overrides baseline parse)
   3. 大小写一致              (Chinese uppercase amount == Arabic lowercase amount)
-
 Each check prints PASS / FAIL / UNKNOWN with the values and source line numbers.
 UNKNOWN means the value could not be located -- never assume PASS.
 Output is also written to output/机检_价格.md when an output dir is writable.
@@ -18,8 +15,6 @@ import sys
 import os
 import re
 import argparse
-
-
 def parse_num(s):
     if s is None:
         return None
@@ -28,8 +23,6 @@ def parse_num(s):
         return float(s)
     except ValueError:
         return None
-
-
 CN_DIGITS = {
     '零': 0, '〇': 0, '0': 0,
     '一': 1, '壹': 1, '1': 1,
@@ -49,11 +42,8 @@ CN_UNITS = {
     '万': 10000, '萬': 10000,
     '亿': 100000000, '億': 100000000,
 }
-
-
 def parse_amount_cn(cn):
     """Parse a Chinese uppercase amount (with 元/角/分) to a float, or None.
-
     Accumulates by position: 拾/佰/仟 multiply into the current integer section,
     万/亿 roll the section up; 元 finalises the integer part; 角 (×0.1) and
     分 (×0.01) add directly to the decimal part. Handles 零/整 and mixed
@@ -92,8 +82,6 @@ def parse_amount_cn(cn):
             int_num = 0
     total = int_total + decimal + int_section + int_num
     return total if total > 0 else None
-
-
 def split_row(line):
     line = line.strip()
     if line.startswith('|'):
@@ -101,8 +89,6 @@ def split_row(line):
     if line.endswith('|'):
         line = line[:-1]
     return [c.strip() for c in line.split('|')]
-
-
 def extract_md_tables(md):
     lines = md.splitlines()
     tables = []
@@ -122,15 +108,11 @@ def extract_md_tables(md):
         else:
             i += 1
     return tables
-
-
 def find_amount_column(header):
     for idx, h in enumerate(header):
         if re.search(r'小计|金额|合计|单价|报价|价格|费用|总价|预算', h):
             return idx
     return None
-
-
 def sum_detail_tables(md):
     best = None
     for header, rows, line0 in extract_md_tables(md):
@@ -154,8 +136,6 @@ def sum_detail_tables(md):
     if best is None:
         return None, None, 0
     return best[0], best[1], best[2]
-
-
 def find_total(md):
     pats = [
         r'投标总报价[^\n]*?[¥￥]?\s*([\d,]+\.?\d*)',
@@ -170,8 +150,6 @@ def find_total(md):
                 if v is not None:
                     return v, i, line.strip()
     return None, None, None
-
-
 def find_uppercase(md):
     m = re.search(r'大写.{0,8}?[：:]\s*(?:人民币)?\s*([零一二三四五六七八九壹贰叁肆伍陆柒捌玖拾佰仟万亿万〇两0-9元圆整角分]+)',
                   md)
@@ -179,24 +157,18 @@ def find_uppercase(md):
         line = md[:m.start()].count('\n') + 1
         return parse_amount_cn(m.group(1)), line
     return None, None
-
-
 def find_lowercase(md):
     m = re.search(r'小写.{0,8}?[：:]\s*[¥￥]?\s*([\d,]+\.?\d*)', md)
     if m:
         line = md[:m.start()].count('\n') + 1
         return parse_num(m.group(1)), line
     return None, None
-
-
 # 限价裁决/调整词：基准中若写明「最高限价：650000 元（经补遗第2号调减为
 # 600000 元）」，限价关键词后的第一个数字是**过期旧值**；须取最后一次裁决词
 # 后的数字（后发布者优先），否则超裁决限价的报价会被静默误判 PASS。
 _ADJUDICATE_RE = re.compile(
     r'(?:调减为|调增为|调整为|更正为|修改为|改为|顺延至|确定为|更新为|最终以|最终为)'
     r'[^\d]{0,15}[¥￥]?\s*([\d,]+\.?\d*)')
-
-
 def find_limit(baseline_text, cli_limit):
     if cli_limit is not None:
         return cli_limit, None, "CLI --limit"
@@ -217,11 +189,8 @@ def find_limit(baseline_text, cli_limit):
         if v is not None:
             return v, i, line.strip()
     return None, None, None
-
-
 def check(doc_text, baseline_text, cli_limit):
     results = []
-
     dsum, dline, dcnt = sum_detail_tables(doc_text)
     total, tline, tline_txt = find_total(doc_text)
     if dsum is not None and total is not None:
@@ -238,7 +207,6 @@ def check(doc_text, baseline_text, cli_limit):
             "未定位明细表或一览表总价",
             f"明细={'有' if dsum is not None else '无'} 总价={'有' if total is not None else '无'}",
         ))
-
     limit, lline, lsrc = find_limit(baseline_text, cli_limit)
     if total is not None and limit is not None:
         ok = total <= limit
@@ -255,7 +223,6 @@ def check(doc_text, baseline_text, cli_limit):
             "未定位总报价或限价",
             f"总价={'有' if total is not None else '无'} 限价={'有' if limit is not None else '无'}",
         ))
-
     upper, uline = find_uppercase(doc_text)
     lower, lline2 = find_lowercase(doc_text)
     if upper is not None and lower is not None:
@@ -274,8 +241,6 @@ def check(doc_text, baseline_text, cli_limit):
             f"大写={'有' if upper is not None else '无'} 小写={'有' if lower is not None else '无'}",
         ))
     return results
-
-
 def render(results):
     out = ["# 机检_价格", "", "| 检查项 | 结论 | 数值 | 依据 |", "| --- | --- | --- | --- |"]
     overall = "PASS"
@@ -288,22 +253,17 @@ def render(results):
     out.append("")
     out.append(f"总体结论： **{overall}**")
     return "\n".join(out)
-
-
 def main():
     ap = argparse.ArgumentParser(description="Mechanical price checks (V1.1).")
     ap.add_argument("--baseline", help="审查基准 .md (for limit)")
     ap.add_argument("--doc", required=True, help="响应文件抽取 .md")
     ap.add_argument("--limit", type=float, default=None, help="最高限价 (覆盖 baseline 解析)")
     args = ap.parse_args()
-
     doc_text = open(args.doc, "r", encoding="utf-8").read()
     baseline_text = open(args.baseline, "r", encoding="utf-8").read() if args.baseline else ""
-
     results = check(doc_text, baseline_text, args.limit)
     report = render(results)
     print(report)
-
     out_path = os.path.join(os.path.dirname(os.path.abspath(args.doc)), "机检_价格.md")
     try:
         with open(out_path, "w", encoding="utf-8") as f:
@@ -311,10 +271,7 @@ def main():
         print(f"\n[written] {out_path}")
     except OSError:
         pass
-
     if any(v == "FAIL" for _, v, _, _ in results):
         sys.exit(2)
-
-
 if __name__ == "__main__":
     main()
