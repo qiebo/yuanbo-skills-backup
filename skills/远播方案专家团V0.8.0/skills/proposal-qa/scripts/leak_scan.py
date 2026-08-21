@@ -3,7 +3,7 @@
 
 Features
 --------
-- Loads generic regex patterns from tests/leak_terms.txt.
+- Loads generic regex patterns from leak_terms.txt next to this script.
 - Accepts project-specific regex files via --terms PATH (repeatable).
 - Accepts project-specific *literal* terms via --term TEXT (repeatable).
 - Scans .docx Word body, headers, footers, footnotes, endnotes and comments.
@@ -28,16 +28,25 @@ from pathlib import Path
 from typing import Iterable
 from xml.etree import ElementTree as ET
 
-ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_TERMS_FILE = ROOT / "tests" / "leak_terms.txt"
+SCRIPT_DIR = Path(__file__).resolve().parent
+DEFAULT_TERMS_FILE = SCRIPT_DIR / "leak_terms.txt"
 DOCX_PART_RE = re.compile(
     r"^word/(?:document\.xml|header\d*\.xml|footer\d*\.xml|footnotes\.xml|endnotes\.xml|comments\.xml)$"
+    r"|^docProps/(?:core|app)\.xml$"
 )
 TEXT_TAGS = {"t", "instrText", "delText"}
 
 
 class ScanError(RuntimeError):
     pass
+
+
+def configure_stdio() -> None:
+    """Keep diagnostics usable on Windows consoles that default to GBK."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure:
+            reconfigure(encoding="utf-8", errors="replace")
 
 
 def load_regex_file(path: Path) -> list[tuple[str, str]]:
@@ -81,6 +90,14 @@ def xml_visible_text(xml_bytes: bytes, part: str) -> str:
     try:
         root = ET.fromstring(xml_bytes)
         chunks: list[str] = []
+        if part.startswith("docProps/"):
+            # docProps/core.xml (dc:creator, cp:lastModifiedBy, dc:title, ...) and
+            # docProps/app.xml (Company, Manager, Application, ...) use plain
+            # element text, not <w:t>. Extract all non-empty element text.
+            for elem in root.iter():
+                if elem.text and elem.text.strip():
+                    chunks.append(elem.text.strip())
+            return "\n".join(chunks)
         for elem in root.iter():
             local = elem.tag.rsplit("}", 1)[-1]
             if local in TEXT_TAGS and elem.text:
@@ -154,12 +171,13 @@ def parse_args():
     ap.add_argument("files", nargs="+", help="files to scan; use '-' for stdin")
     ap.add_argument("--terms", action="append", default=[], help="additional regex terms file; repeatable")
     ap.add_argument("--term", action="append", default=[], help="additional literal internal-only term; repeatable")
-    ap.add_argument("--no-default-terms", action="store_true", help="do not load tests/leak_terms.txt")
+    ap.add_argument("--no-default-terms", action="store_true", help="do not load the bundled leak_terms.txt")
     ap.add_argument("--json", action="store_true", dest="as_json", help="emit machine-readable JSON")
     return ap.parse_args()
 
 
 def main() -> None:
+    configure_stdio()
     args = parse_args()
     try:
         patterns = build_patterns(not args.no_default_terms, args.terms, args.term)

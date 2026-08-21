@@ -100,6 +100,9 @@ budget: <预计字数>                    # 来自大纲篇幅预算
 ## 9. 返修规则
 Writer 只能声明“我已按 R1/R2 修改”，不能声明“QA 已通过”。返修稿必须回到 quality-reviewer 做 closure review。
 
+## 9.5 分片协议（正文输出）
+完整方案正文通常上万字，按章分片输出：每片 ≤4000 字、命名 `DRAFT_part{i}/n · 第X章`，末尾附短索引（完整 `artifact_meta` + 各片章节清单，artifact_meta 只在索引出现一次）。REVISED_DRAFT 同规则。
+
 ## 10. 正文最终自检
 - 每章是否有明确任务？
 - 哪些句子只是在“显得专业”？
@@ -125,4 +128,4 @@ Writer 只能声明“我已按 R1/R2 修改”，不能声明“QA 已通过”
 
 **实现说明（给 Leader）**
 - 用 `python-docx` 重建文档（设定 Normal 样式字体/字号/缩进 → 封面 Section → 逐章写入标题与正文（检测缩进）→ 表格统一套用 `_table_style_oriented` 样式 → add_picture 插图并加图题）→ 保存。
-- 优先使用 WorkBuddy 托管解释器（路径形如 `%USERPROFILE%\.workbuddy\binaries\python\versions\<ver>\python.exe`，macOS/Linux 为 `~/.workbuddy/binaries/python/versions/<ver>/bin/python`）或项目 venv；若缺包先在隔离环境安装 `python-docx`，不污染用户环境。
+- **解释器必须与对话首步环境自检（bin/check_env.py）回报的 `DOCX_PYTHON` 一致**：依赖 `python-docx` 已在预检阶段安装就绪，**本步不再临时安装**，直接 `from docx import Document`。若预检未跑或 `DOCX_READY=no`，先回到总师执行预检，禁止在此处 `pip install`。

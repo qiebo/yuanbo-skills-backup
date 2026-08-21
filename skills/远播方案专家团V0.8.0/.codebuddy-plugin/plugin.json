@@ -1,7 +1,7 @@
 {
   "name": "yuanbo-school-proposal-team",
-  "version": "0.4.0",
-  "description": "K12 school construction proposal expert team with auditable sub-agent handoffs, clientization guard, mandatory QA closure review, and dynamic internal-info leak gates.",
+  "version": "0.8.0",
+  "description": "K12 school construction proposal expert team with compact route-aware prompts, mandatory clarification gates, auditable handoffs, clientization guard, QA closure and dynamic leak gates.",
   "author": {
     "name": "Yuanbo Education"
   },

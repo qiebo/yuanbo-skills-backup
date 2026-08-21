@@ -118,6 +118,17 @@ def main() -> None:
         if len(text) > 14000:
             warn(f"agent prompt is long ({len(text)} chars): {p.name}")
 
+    # V0.8.0 prompt budget: keep dispatch prompts executable instead of
+    # repeating the deep method already carried by shared Skills.
+    prompt_budgets = {
+        "proposal-team-lead.md": 8000,
+        "requirement-analyst.md": 7000,
+    }
+    for filename, budget in prompt_budgets.items():
+        path = ROOT / "agents" / filename
+        if len(path.read_text(encoding="utf-8")) > budget:
+            fail(f"{path.relative_to(ROOT)} exceeds V0.8.0 prompt budget: {budget} chars")
+
     if set(agent_ids) != set(member_ids):
         fail("plugin members do not match agent frontmatter names")
 
@@ -149,15 +160,53 @@ def main() -> None:
     must_contain(ROOT / "agents/requirement-analyst.md", [
         "clientization_guard", "internal_only_terms", "artifact_meta"
     ])
+    # V0.6.0 requirement clarification gate must not regress.
+    must_contain(ROOT / "agents/proposal-team-lead.md", [
+        "CLARIFY_PLAN", "mode: intake", "mode: final", "clarify_trace",
+        "clarify_waived", "AskUserQuestion", "requirement_assessment",
+        "按需", "首轮 pass，或 revise 后 closure pass",
+    ])
+    must_contain(ROOT / "agents/requirement-analyst.md", [
+        "CLARIFY_PLAN", "gap_analysis", "material_request", "direction_options",
+        "clarify_trace", "non_blocking", "requirement_assessment", "候选评估维度",
+    ])
+    must_contain(ROOT / "skills/proposal-core/SKILL.md", [
+        "CLARIFY_PLAN", "clarify_waived", "需求澄清三段式", "评估在前", "按需",
+    ])
     must_contain(ROOT / "agents/quality-reviewer.md", [
         "review_mode: closure", "QA_CLOSURE_REPORT", "dynamic_terms_checked"
     ])
     must_contain(ROOT / "agents/proposal-writer.md", [
-        "REVISED_DRAFT", "claimed_closed_revision_ids", "clientization_checked"
+        "REVISED_DRAFT", "claimed_closed_revision_ids", "clientization_checked",
+        "SECTION_OUTLINE", "DRAFT_part",
+    ])
+    # V0.7.0 contract-field completeness must not regress.
+    must_contain(ROOT / "agents/top-design-architect.md", [
+        "downstream_dispatch", "depth_plan",
+    ])
+    must_contain(ROOT / "agents/proposal-team-lead.md", [
+        "downstream_dispatch", "depth_plan", "direction_confirmed",
+        "SECTION_OUTLINE", "门禁矩阵", "路线裁剪", "C-single", "C-multi",
+        "design_approved", "outline_approved", "present_files",
+    ])
+    must_contain(ROOT / "skills/proposal-core/SKILL.md", [
+        "SECTION_OUTLINE", "门禁按路线裁剪", "A-single_space", "A-multi_space",
+        "A-center_level", "C-single", "C-multi", "design_approved",
+        "outline_approved", "present_files",
     ])
     for rel in ["tests/leak_scan.py", "tests/leak_terms.txt", "tests/test_leak_scan.py"]:
         if not (ROOT / rel).exists():
             fail(f"missing V0.2.1 gate file: {rel}")
+
+    # V0.7.0 cross-file consistency: the two leak_scan.py copies must stay in
+    # lockstep except for the default-terms-path lines.
+    _allow = ("leak_terms.txt", "Path(__file__)", "next to this script", "the bundled")
+    _scan_a = [ln for ln in (ROOT / "tests" / "leak_scan.py").read_text(encoding="utf-8").splitlines()
+               if not any(k in ln for k in _allow)]
+    _scan_b = [ln for ln in (ROOT / "skills" / "proposal-qa" / "scripts" / "leak_scan.py").read_text(encoding="utf-8").splitlines()
+               if not any(k in ln for k in _allow)]
+    if _scan_a != _scan_b:
+        fail("leak_scan.py copies drifted apart (tests/ vs skills/proposal-qa/scripts/)")
 
     print("OK: local package structure is internally consistent")
     print(f"  version: {plugin['version']}")

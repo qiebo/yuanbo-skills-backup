@@ -97,14 +97,76 @@
 
 ### L9.3 DOCX 页眉泄漏
 构造正文干净、页眉含“内部资料”的 docx。
-命令：`python3 tests/leak_scan.py header_leak.docx`
+命令：`python3 "<专家目录>/skills/proposal-qa/scripts/leak_scan.py" header_leak.docx`
 期望：非零退出，报告 component=word/header1.xml。
 
 ### L9.4 动态 literal term
 正文含一个不在通用词表中的内部代号“火种计划”。
-命令：`python3 tests/leak_scan.py --term "火种计划" final.txt`
+命令：`python3 "<专家目录>/skills/proposal-qa/scripts/leak_scan.py" --term "火种计划" final.txt`
 期望：非零退出。
 
 ### L9.5 扫描器故障阻断
 提供损坏的 .docx。
 期望：scanner 退出码 2，并明确 BLOCK DELIVERY；不得把解析失败当作 clean。
+
+## L10 V0.6.0 需求澄清三段式门禁
+
+### L10.1 信息极少时不得直接出卡（核心回归）
+输入：“帮某中学做一个科创实验室方案。”（仅此一句，无任何附件）
+
+期望执行顺序：资料盘点 → `requirement-analyst(mode=intake)` 回传 CLARIFY_PLAN → 总师出「信息与资料清单」HTML → `AskUserQuestion` 逐题追问 → `requirement-analyst(mode=final)` → 卡①。
+
+必须**不出现**的行为：
+- 直接输出 PROJECT_BRIEF；
+- 直接弹卡①；
+- 只弹一次"请确认需求"然后开始调研。
+
+检查 CLARIFY_PLAN：blocking 至少覆盖学段、空间范围、交付用途三项；每项带可直接回答的问题与候选答案；含 `requirement_assessment`（M1-M7 逐项 satisfied/partial/missing 结论），`material_request` 仅列真正缺失项（已 satisfied 的不得列入）；direction_options 有 2-3 组。
+
+### L10.2 分级门禁判定
+输入：材料齐全（含平面图、校本课程目录、办学规划），但未说明是校内建设还是省级项目申报。
+
+期望：把"交付用途/评审口径"判为 **blocking** 并追问；平面图未标精确尺寸等细节判为 non_blocking（给假设 + 风险，不追问）。
+
+### L10.3 用户要求跳过澄清
+输入：初始需求 + 用户明确表示“不用问了，你直接按常规做”。
+
+期望：允许跳过，`clarify_trace.clarify_waived=true`；卡①**顶部必须有醒目横幅**逐条列出未确认方向并提示返工风险；不得静默按假设推进而不告知。
+
+### L10.4 三轮未收敛必须停
+输入：用户连续三轮回答含糊（如“都行”“你定”），关键 blocking 仍未关闭，且未明确授权假设。
+
+期望：总师**停止推进**，列出未确定的方向性事项与各自后果，等待补充或授权；不得自行假设进入调研。
+
+### L10.5 资料放文件夹但未告知
+准备：在工作区 `输入资料/` 放入 1 份平面图 PDF 与 1 份校本课程 docx，对话中**不提及**。
+
+期望：Phase 1.0 主动扫描发现并**列清单请用户认领**；未认领前不得作为设计依据（红线 #12）；认领后写入 `materials_received` 并影响 blocking 判定。
+
+### L10.6 澄清结果不得丢失
+准备：Phase 1.2 用户已明确回答“高中、单一专用教室、用于市级项目申报”。
+
+期望：`mode=final` 的 PROJECT_BRIEF 中 `clarify_trace.resolved` 逐条记录；这三项**不得**再次出现在 `must_confirm`（重复追问 = 澄清白做）；`clarify_trace.unresolved` 中的每个 id 必须在 must_confirm 中有对应条目。
+
+### L10.7 已提供充分资料时不得机械追问固定维度（评估在前）
+准备：初始需求外，用户已提供 ① 平面图 PDF、② 校本课程目录 docx、③ 学校办学规划（含校训解读与荣誉）、④ 一份同类学校参考方案。
+
+期望：`requirement_assessment` 中 M1/M2/M3/M4 应判 **satisfied**（材料已覆盖），其依据写入 `can_confirm`；**不得**再把"请描述你的空间规划""你的课程想法是什么""有没有参考方案"当作 blocking 问题逐条抛给用户。仅当另有真正缺失且影响方向的维度（如本单交付用途/评审口径未说明）才进入 blocking。这验证"评估在前、提问在后"——不机械套用固定维度。
+
+### L10.8 课程/空间按需调取 + 终段顺序（评估在前 + 评审前置）
+准备 A：用户明确"只做学生发展中心空间建设，不涉及课程体系"，DESIGN_BRIEF 无课程板块。
+准备 B：用户明确"只做 AI 课程方案，不建实体空间"，DESIGN_BRIEF 无空间板块。
+
+期望 A：流程**不得**强制调取 `education-program-designer`（PROGRAM_PLAN）；可按需只走 `space-planner`。
+期望 B：流程**不得**强制调取 `space-planner`（SPACE_PLAN）；可按需只走 `education-program-designer`。
+
+终段顺序（两种准备通用）：主笔产出 DRAFT → **必须先完成质量评审（QA 闭环通过：首轮 pass，或 revise 后 closure pass）** → 泄漏扫描（0 hits）→ 再弹 **卡④ 初稿确认卡** 给用户确认 → 用户确认满意后 → **最后**才输出精美 Word 精排版。
+不得出现的倒置：先弹卡④ 让用户确认、之后再跑质量评审或泄漏扫描；或确认后直接交草稿、不出精排版 Word。这验证“先评审与扫描、后确认、最后精排”。
+
+### L10.9 规模分级（single_space 轻量档）
+输入：单室级小方案（如“帮某中学做一个科创实验室方案”），材料已含平面图与办学理念。
+期望：PROJECT_BRIEF.`project_scale=single_space`；澄清合并为 1 轮；卡②③合并为一张“设计+大纲确认卡”；evidence-researcher 降为按需或 `targeted_check`（不做全量调研）。不得走 center_level 全流程（7-10 次子代理 + 8-12 次交互）。
+
+### L10.10 提示词执行收敛与合并卡门禁
+
+期望：总师按短状态机执行，不重复解释共享 Skill；`single_space` 的合并卡同时收集并记录 `design_approved`、`outline_approved`，任一未通过都不得进入 DRAFT；`C-single` 不创建团队，`C-multi` 才创建 TeamCreate。共享规则变化只在 `proposal-core` 维护。
