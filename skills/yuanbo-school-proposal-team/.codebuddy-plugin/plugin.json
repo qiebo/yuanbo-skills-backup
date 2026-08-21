@@ -1,0 +1,194 @@
+{
+  "name": "yuanbo-school-proposal-team",
+  "version": "0.4.0",
+  "description": "K12 school construction proposal expert team with auditable sub-agent handoffs, clientization guard, mandatory QA closure review, and dynamic internal-info leak gates.",
+  "author": {
+    "name": "Yuanbo Education"
+  },
+  "expertType": "team",
+  "agentName": "proposal-team-lead",
+  "teamInfo": {
+    "leadAgent": "proposal-team-lead",
+    "memberAgents": [
+      "requirement-analyst",
+      "evidence-researcher",
+      "top-design-architect",
+      "education-program-designer",
+      "space-planner",
+      "proposal-writer",
+      "quality-reviewer"
+    ]
+  },
+  "agents": [
+    "./agents/proposal-team-lead.md",
+    "./agents/requirement-analyst.md",
+    "./agents/evidence-researcher.md",
+    "./agents/top-design-architect.md",
+    "./agents/education-program-designer.md",
+    "./agents/space-planner.md",
+    "./agents/proposal-writer.md",
+    "./agents/quality-reviewer.md"
+  ],
+  "skills": [
+    "./skills/proposal-core",
+    "./skills/research-evidence",
+    "./skills/top-design",
+    "./skills/domain-science-innovation",
+    "./skills/domain-student-development",
+    "./skills/proposal-writing",
+    "./skills/proposal-qa"
+  ],
+  "displayName": {
+    "en": "Yuanbo Proposal Team",
+    "zh": "远播方案专家团"
+  },
+  "profession": {
+    "en": "Yuanbo Proposal Team",
+    "zh": "远播方案专家团"
+  },
+  "displayDescription": {
+    "en": "A K12 proposal team for requirements, research, top design, programs, space planning, writing and QA.",
+    "zh": "面向初高中特色育人项目，协同完成需求、调研、顶层设计、课程空间、方案撰写与质量评审。"
+  },
+  "categoryId": "12-IndustryConsultant",
+  "defaultInitPrompt": {
+    "en": "Create a complete construction proposal for this school based on my materials",
+    "zh": "根据我提供的材料，为这所学校完成一份正式建设方案"
+  },
+  "tags": [
+    {
+      "en": "K12 Proposal",
+      "zh": "学校建设方案"
+    },
+    {
+      "en": "Top Design",
+      "zh": "顶层设计"
+    },
+    {
+      "en": "Education Space",
+      "zh": "特色育人空间"
+    }
+  ],
+  "quickPrompts": [
+    {
+      "en": "Create a complete construction proposal for this school based on my materials",
+      "zh": "根据我提供的材料，为这所学校完成一份正式建设方案"
+    },
+    {
+      "en": "Optimize this existing proposal: reduce AI-style writing and improve structure and depth",
+      "zh": "优化这份已有方案，重点解决AI味、结构和内容深度问题"
+    },
+    {
+      "en": "Design a distinctive top-level concept and overall architecture for this school project",
+      "zh": "为这个学校项目设计有记忆点的顶层理念与总体架构"
+    }
+  ],
+  "members": [
+    {
+      "id": "proposal-team-lead",
+      "name": {
+        "en": "Orion",
+        "zh": "总师"
+      },
+      "profession": {
+        "en": "Proposal Chief Architect",
+        "zh": "方案总师"
+      },
+      "role": "lead",
+      "avatar": "avatars/proposal-team-lead.png"
+    },
+    {
+      "id": "requirement-analyst",
+      "name": {
+        "en": "Iris",
+        "zh": "澄析"
+      },
+      "profession": {
+        "en": "Requirements Analyst",
+        "zh": "需求分析专家"
+      },
+      "role": "member",
+      "avatar": "avatars/requirement-analyst.png"
+    },
+    {
+      "id": "evidence-researcher",
+      "name": {
+        "en": "Atlas",
+        "zh": "研证"
+      },
+      "profession": {
+        "en": "Education Researcher",
+        "zh": "信息研究专家"
+      },
+      "role": "member",
+      "avatar": "avatars/evidence-researcher.png"
+    },
+    {
+      "id": "top-design-architect",
+      "name": {
+        "en": "Nova",
+        "zh": "策源"
+      },
+      "profession": {
+        "en": "Top Design Architect",
+        "zh": "顶层设计专家"
+      },
+      "role": "member",
+      "avatar": "avatars/top-design-architect.png"
+    },
+    {
+      "id": "education-program-designer",
+      "name": {
+        "en": "Sage",
+        "zh": "育构"
+      },
+      "profession": {
+        "en": "Education Program Designer",
+        "zh": "课程与育人体系专家"
+      },
+      "role": "member",
+      "avatar": "avatars/education-program-designer.png"
+    },
+    {
+      "id": "space-planner",
+      "name": {
+        "en": "Frame",
+        "zh": "场构"
+      },
+      "profession": {
+        "en": "Learning Space Planner",
+        "zh": "空间规划专家"
+      },
+      "role": "member",
+      "avatar": "avatars/space-planner.png"
+    },
+    {
+      "id": "proposal-writer",
+      "name": {
+        "en": "Quill",
+        "zh": "主笔"
+      },
+      "profession": {
+        "en": "Senior Proposal Writer",
+        "zh": "资深方案主笔"
+      },
+      "role": "member",
+      "avatar": "avatars/proposal-writer.png"
+    },
+    {
+      "id": "quality-reviewer",
+      "name": {
+        "en": "Gauge",
+        "zh": "审衡"
+      },
+      "profession": {
+        "en": "Proposal Quality Reviewer",
+        "zh": "方案质量评审专家"
+      },
+      "role": "member",
+      "avatar": "avatars/quality-reviewer.png"
+    }
+  ],
+  "plugin": "yuanbo-school-proposal-team",
+  "avatar": "avatars/proposal-team-lead.png"
+}
